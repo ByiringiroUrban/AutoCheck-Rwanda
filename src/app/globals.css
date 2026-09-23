@@ -1,26 +1,127 @@
 @import "tailwindcss";
 
+/*
+ * AutoCheck design tokens — extracted via getComputedStyle from
+ * https://www.autocheck.com/vehiclehistory/ (Bootstrap 5 base, root font-size 14px).
+ * The site declares `font-family: Roboto, sans-serif` but never loads a Roboto
+ * webfont, so it renders in the platform sans-serif fallback. We mirror that exactly.
+ */
 :root {
+  --ac-ink: #212529; /* body text rgb(33,37,41) */
+  --ac-blue: #004990; /* links, nav, step titles rgb(0,73,144) */
+  --ac-navy: #1e427a; /* search card header rgb(30,66,122) */
+  --ac-magenta: #af1685; /* primary buttons rgb(175,22,133) */
+  --ac-magenta-hover: #d81ba4;
+  --ac-card: #fbfbfb; /* card background */
+  --ac-footer: #252525;
+  --ac-or-gray: #979797;
+  --ac-input-border: #aeaeae;
+  --ac-select-text: #495057;
+  --ac-danger: #dc3545;
+  --ac-light: #f8f9fa;
+  --ac-dropdown-border: #cccccc;
+
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: var(--ac-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ac-ink: var(--ac-ink);
+  --color-ac-blue: var(--ac-blue);
+  --color-ac-navy: var(--ac-navy);
+  --color-ac-magenta: var(--ac-magenta);
+  --color-ac-magenta-hover: var(--ac-magenta-hover);
+  --color-ac-card: var(--ac-card);
+  --color-ac-footer: var(--ac-footer);
+  --color-ac-or-gray: var(--ac-or-gray);
+  --color-ac-input-border: var(--ac-input-border);
+  --color-ac-select-text: var(--ac-select-text);
+  --color-ac-danger: var(--ac-danger);
+  --color-ac-light: var(--ac-light);
+  --color-ac-dropdown-border: var(--ac-dropdown-border);
+  --font-sans: Roboto, sans-serif;
+  /* Bootstrap breakpoints used by the original */
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-size: 14px; /* original root font-size; 1rem = 14px */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: #ffffff;
+  color: var(--ac-ink);
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+a {
+  color: var(--ac-blue);
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+/* Bootstrap-equivalent container: 1140px max, 10.5px side padding */
+.ac-container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 10.5px;
+}
+@media (min-width: 576px) { .ac-container { max-width: 540px; } }
+@media (min-width: 768px) { .ac-container { max-width: 720px; } }
+@media (min-width: 992px) { .ac-container { max-width: 960px; } }
+@media (min-width: 1200px) { .ac-container { max-width: 1140px; } }
+
+/* Primary magenta button (.btn.btn-primary.buttonPrimary) */
+.ac-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 80px;
+  padding: 8.4px 11.2px;
+  border: none;
+  border-radius: 5.25px;
+  background-color: var(--ac-magenta);
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.ac-btn:hover,
+.ac-btn:active {
+  background-color: var(--ac-magenta-hover);
+}
+.ac-btn:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(175, 22, 133, 0.5);
+}
+
+/* Bootstrap-like caret for dropdown toggles */
+.ac-caret::after {
+  content: "";
+  display: inline-block;
+  margin-left: 4.08px;
+  vertical-align: 4.08px;
+  border-top: 4.5px solid;
+  border-right: 4.5px solid transparent;
+  border-bottom: 0;
+  border-left: 4.5px solid transparent;
 }
