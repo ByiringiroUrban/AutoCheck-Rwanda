@@ -49,6 +49,7 @@
   --breakpoint-xl: 1200px;
 }
 
+@layer base {
 html {
   font-size: 14px; /* original root font-size; 1rem = 14px */
 }
@@ -74,6 +75,9 @@ img {
   vertical-align: middle;
 }
 
+}
+
+@layer components {
 /* Bootstrap-equivalent container: 1140px max, 10.5px side padding */
 .ac-container {
   width: 100%;
@@ -124,4 +128,5 @@ img {
   border-right: 4.5px solid transparent;
   border-bottom: 0;
   border-left: 4.5px solid transparent;
+}
 }
