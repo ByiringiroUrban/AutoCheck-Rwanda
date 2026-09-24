@@ -8,10 +8,10 @@ type NavLink = { label: string; href: string };
 type NavGroup = { label: string; links: NavLink[] };
 
 const UTILITY_LINKS: (NavLink & { external?: boolean })[] = [
-  { label: "Dealer Sign In", href: "https://www.autocheck.com/members/login.do", external: true },
+  { label: "Dealer Sign In", href: "/vehiclehistory/dealer-login" },
   { label: "Dispute", href: "/vehiclehistory/dispute" },
   { label: "Contact Us", href: "/vehiclehistory/contact" },
-  { label: "Consumer Sign In", href: "/vehiclehistory/login" },
+  { label: "Sign In", href: "/vehiclehistory/login" },
 ];
 
 const NAV_GROUPS: NavGroup[] = [
@@ -24,16 +24,15 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Finding Vehicles",
-    links: [{ label: "How to Buy a Used Car", href: "/vehiclehistory/autoshoppers-guide" }],
+    links: [{ label: "How to Buy a Used Car in Rwanda", href: "/vehiclehistory/buyers-guide" }],
   },
   {
-    label: "The AutoCheck Difference",
+    label: "The AutoCheck Rwanda Difference",
     links: [
-      { label: "Data Backed by Experian", href: "/vehiclehistory/backed-by-experian" },
-      { label: "The Patented AutoCheck Score", href: "/vehiclehistory/autocheck-score" },
+      { label: "The AutoCheck Score", href: "/vehiclehistory/autocheck-score" },
       { label: "Vehicle Buyback Protection", href: "/vehiclehistory/vehicle-buyback-protection" },
       { label: "VIN Checks for Subscribers", href: "/vehiclehistory/subscription-benefits" },
-      { label: "Flood Risk Check", href: "/vehiclehistory/flood-risk-check" },
+      { label: "Flood & Accident Risk Check", href: "/vehiclehistory/risk-check" },
     ],
   },
 ];
@@ -98,7 +97,7 @@ function DesktopHeader() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/logo-desktop.png"
-              alt="AutoCheck by Experian"
+              alt="AutoCheck Rwanda"
               width={212}
               height={76}
               className="block h-[76px] w-[212px]"
@@ -191,7 +190,7 @@ function MobileHeader() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/logo-mobile.png"
-            alt="AutoCheck by Experian"
+            alt="AutoCheck Rwanda"
             width={212}
             height={61}
             className="block h-[58px] w-auto"

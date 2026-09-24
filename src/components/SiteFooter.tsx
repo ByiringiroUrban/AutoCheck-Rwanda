@@ -2,18 +2,18 @@ import type { FooterColumn, NavLink } from "@/types/content";
 
 const columns: FooterColumn[] = [
   {
-    heading: "AutoCheck® Vehicle History Reports",
+    heading: "AutoCheck® Rwanda Vehicle History Reports",
     links: [
       { label: "Order Vehicle History Reports", href: "/vehiclehistory/vehicle-history-reports" },
       { label: "View a Sample Vehicle History Report", href: "/vehiclehistory/sample-vehicle-history-report" },
-      { label: "VIN and License Plate Checks", href: "/vehiclehistory/subscription-benefits" },
-      { label: "Search by License Plate", href: "/vehiclehistory/search-by-license-plate" },
+      { label: "VIN and Plate Checks", href: "/vehiclehistory/subscription-benefits" },
+      { label: "Search by Rwanda Plate Number", href: "/vehiclehistory/search-by-plate" },
     ],
   },
   {
-    heading: "Buying a Used Car",
+    heading: "Buying a Used Car in Rwanda",
     links: [
-      { label: "How to Buy a Used Car", href: "/vehiclehistory/autoshoppers-guide" },
+      { label: "How to Buy a Used Car in Rwanda", href: "/vehiclehistory/buyers-guide" },
       { label: "What is a VIN?", href: "/vehiclehistory/vin-basics" },
       { label: "VIN Decode Explained", href: "/vehiclehistory/vin-basics#decode" },
       { label: "Where can I Find the VIN?", href: "/vehiclehistory/vin-basics#findVin" },
@@ -26,42 +26,34 @@ const columns: FooterColumn[] = [
     links: [
       { label: "Frequently Asked Questions", href: "/vehiclehistory/faq" },
       { label: "Contact Us", href: "/vehiclehistory/contact" },
-      { label: "Free Digital Dashboard Delivery", href: "/vehiclehistory/free-online-delivery" },
+      { label: "Free Digital Report Delivery", href: "/vehiclehistory/free-online-delivery" },
       { label: "Secure Shopping", href: "/vehiclehistory/secure-shopping" },
-      { label: "Your Data Safety and Personal Privacy", href: "https://www.experian.com/privacy/auto_check", external: true },
+      { label: "Your Data Safety and Privacy", href: "/vehiclehistory/privacy" },
       { label: "Glossary of Vehicle History Terms", href: "/vehiclehistory/glossary" },
     ],
   },
   {
-    heading: "The AutoCheck® Difference",
+    heading: "The AutoCheck® Rwanda Difference",
     links: [
-      { label: "The Patented AutoCheck Score®", href: "/vehiclehistory/autocheck-score" },
-      { label: "U.S. Patent No. 8,005,759", href: "/vehiclehistory/patent-notice" },
+      { label: "The AutoCheck Score®", href: "/vehiclehistory/autocheck-score" },
       { label: "Vehicle Buyback Protection", href: "/vehiclehistory/vehicle-buyback-protection" },
-      { label: "Data Backed by Experian", href: "/vehiclehistory/backed-by-experian" },
-      { label: "AutoCheck v. Carfax", href: "/vehiclehistory/autocheck-vs-carfax" },
-      { label: "AutoCheck v. Bargain Reports", href: "/vehiclehistory/autocheck-vs-bargain" },
-      { label: "Flood Risk Check", href: "/vehiclehistory/flood-risk-check" },
+      { label: "Flood & Accident Risk Check", href: "/vehiclehistory/risk-check" },
+      { label: "Rwanda Vehicle Registry Data", href: "/vehiclehistory/data-sources" },
     ],
   },
   {
     heading: "Work With Us",
     links: [
-      {
-        label: "Auto Dealer? Become an AutoCheck Member",
-        href: "https://www.experian.com/automotive/autocheck-business#consumer?cmpid=auto_AutoCheckConsumer_web",
-        external: true,
-      },
-      { label: "Online Advertiser? Join the AutoCheck Affiliate Program", href: "/vehiclehistory/affiliate-program" },
-      { label: "Experian Careers", href: "https://www.experian.com/corporate/careers-home.html", external: true },
+      { label: "Car Dealer? Become an AutoCheck Rwanda Member", href: "/vehiclehistory/dealer-signup" },
+      { label: "Online Advertiser? Join Our Affiliate Program", href: "/vehiclehistory/affiliate-program" },
+      { label: "Careers at AutoCheck Rwanda", href: "/vehiclehistory/careers" },
     ],
   },
 ];
 
 const legalLinks: NavLink[] = [
-  { label: "AutoCheck Terms and Conditions", href: "/vehiclehistory/terms-of-use" },
-  { label: "Experian Terms and Conditions", href: "http://www.experian.com/corporate/legalterms.html", external: true },
-  { label: "Privacy Policy", href: "https://www.experian.com/privacy/auto_check", external: true },
+  { label: "AutoCheck Rwanda Terms and Conditions", href: "/vehiclehistory/terms-of-use" },
+  { label: "Privacy Policy", href: "/vehiclehistory/privacy" },
   { label: "Your Ad Choices", href: "/vehiclehistory/your-ad-choices" },
 ];
 
@@ -127,7 +119,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div className="flex justify-center text-[12px] leading-[18px] text-white">
-          © Experian {year}. All rights reserved.
+          © AutoCheck Rwanda {year}. All rights reserved.
         </div>
       </div>
     </footer>

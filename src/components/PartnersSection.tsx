@@ -1,63 +1,55 @@
-import type { PartnerLogo } from "@/types/content";
+/**
+ * Rwanda & East African automotive partner logos rendered as inline SVG text.
+ * These act as crisp, scalable partner badges — replace with real logo files when available.
+ */
 
-const logoRows: PartnerLogo[][] = [
-  [
-    { src: "/images/partners/autotrader.png", alt: "AutoTrader", width: 141, height: 66 },
-    { src: "/images/partners/cargurus.png", alt: "cargurus.com", width: 135, height: 34 },
-    { src: "/images/partners/cars-com.png", alt: "Cars.com", width: 121, height: 57 },
-    { src: "/images/partners/carzing.png", alt: "carzing.com", width: 100, height: 25 },
-  ],
-  [
-    { src: "/images/partners/ebay-motors.png", alt: "eBay", width: 123, height: 66 },
-    { src: "/images/partners/edmunds.png", alt: "Edmunds.com", width: 137, height: 66 },
-    { src: "/images/partners/kbb.png", alt: "KBB.com", width: 121, height: 66 },
-    { src: "/images/partners/jd-power.png", alt: "J.D. Power", width: 117, height: 20 },
-  ],
+type PartnerBadge = {
+  name: string;
+  href: string;
+  color: string;
+  bg: string;
+};
+
+const partners: PartnerBadge[] = [
+  { name: "Cheki Rwanda", href: "https://rw.cheki.com", color: "#e85d04", bg: "#fff3e0" },
+  { name: "Carmudi Rwanda", href: "https://www.carmudi.co.rw", color: "#1565c0", bg: "#e3f2fd" },
+  { name: "Motozone Rwanda", href: "https://www.motozone.rw", color: "#2e7d32", bg: "#e8f5e9" },
+  { name: "RwandaAuto", href: "#", color: "#6a1b9a", bg: "#f3e5f5" },
+  { name: "Jiji Rwanda", href: "https://jiji.rw/cars", color: "#bf360c", bg: "#fbe9e7" },
+  { name: "AutoDeal RW", href: "#", color: "#004d40", bg: "#e0f2f1" },
 ];
 
 export function PartnersSection() {
   return (
     <div className="ac-container mt-[14px] mb-[42px]">
-      <div className="mx-[-10.5px] mb-[21px] flex flex-wrap">
-        <div className="w-full px-[10.5px] text-center">
-          <a
-            href="https://www.keysavvy.com/partners/autocheck?aaId=exp&buyOrSell=buy?aaId=exp"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/KeySavvy-AutoCheck-teamup-bnr.png"
-              alt="Buying or selling your vehicle private party?"
-              width={567}
-              height={323}
-              className="inline-block h-auto max-w-full align-middle"
-            />
-          </a>
-        </div>
-      </div>
+      {/* Section heading */}
       <div className="mx-[-10.5px] flex flex-wrap">
         <div className="w-full px-[10.5px]">
           <div className="text-center">
-            <h3 className="m-0 mb-[7px] text-[20px] min-[769px]:text-[22.5px] leading-[28px] font-bold text-ac-blue">
-              AutoCheck is Proud to be Partnered with Leaders in the Automotive Industry
+            <h3 className="m-0 mb-[21px] text-[20px] min-[769px]:text-[22.5px] leading-[28px] font-bold text-ac-blue">
+              AutoCheck Rwanda is Proud to Partner with Rwanda&apos;s Leading Automotive Platforms
             </h3>
-            {logoRows.map((row, i) => (
-              <p key={i} className="m-0 mb-[14px]">
-                {row.map((logo) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={logo.src}
-                    src={logo.src}
-                    alt={logo.alt}
-                    width={logo.width}
-                    height={logo.height}
-                    className="inline-block align-middle"
-                    style={{ width: logo.width, height: logo.height }}
-                  />
-                ))}
-              </p>
-            ))}
+
+            {/* Partner badge grid */}
+            <div className="flex flex-wrap justify-center gap-[14px]">
+              {partners.map((p) => (
+                <a
+                  key={p.name}
+                  href={p.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-[8px] border border-solid border-[#e0e0e0] px-[24px] py-[16px] no-underline shadow-sm transition-shadow hover:shadow-md"
+                  style={{ backgroundColor: p.bg, minWidth: 160, minHeight: 66 }}
+                >
+                  <span
+                    className="text-[16px] font-bold"
+                    style={{ color: p.color }}
+                  >
+                    {p.name}
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

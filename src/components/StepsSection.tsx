@@ -1,8 +1,9 @@
 import Link from "next/link";
+
 const steps = [
   {
     title: "Step 1. Find Your Car",
-    body: "Search by vehicle identification number (VIN) or US license plate to find the car you want to research.",
+    body: "Search by vehicle identification number (VIN) or Rwanda license plate number to find the car you want to research.",
   },
   {
     title: "Step 2. Pick Your Plan",
@@ -10,7 +11,7 @@ const steps = [
   },
   {
     title: "Step 3. Check Your Vehicle History",
-    body: "from your desktop. One time fee. No recurring charges",
+    body: "Get your full Rwanda vehicle history report instantly from your desktop or phone. One-time fee. No recurring charges.",
   },
 ];
 
@@ -20,7 +21,7 @@ export function StepsSection() {
       <div className="mx-[-10.5px] flex flex-wrap">
         <div className="my-[42px] w-full px-[10.5px] md:w-1/2">
           <h2 className="mb-[7px] py-[3.5px] text-[28px] font-bold leading-[28px] text-ac-ink">
-            Get The AutoCheck Report
+            Get The AutoCheck Rwanda Report
           </h2>
           {steps.map((step) => (
             <div key={step.title}>
@@ -32,7 +33,7 @@ export function StepsSection() {
           ))}
           <div className="mb-[21px]">
             <Link href="/#vehiclehistoryreport" className="ac-btn w-fit no-underline">
-              Get AutoCheck Report
+              Get AutoCheck Rwanda Report
             </Link>
           </div>
           <a
@@ -46,7 +47,7 @@ export function StepsSection() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/reportexample.jpg"
-            alt="AutoCheck Report Pages"
+            alt="AutoCheck Rwanda Report Example Pages"
             width={618}
             height={610}
             className="h-auto max-w-full"
