@@ -37,7 +37,7 @@ export default function LoginPage() {
                     Please enter your email address and password to access your AutoCheck Rwanda account and VHR history.
                   </p>
 
-                  <form id="signin-form" noValidate>
+                  <form id="signin-form" action="/vehiclehistory/dashboard" method="GET">
                     <div className="mb-[16px]">
                       <label htmlFor="signin-email" className="block mb-[5px] text-[12px] font-semibold text-[#555] uppercase tracking-wide">
                         E-mail
@@ -95,7 +95,7 @@ export default function LoginPage() {
                   </h2>
                 </div>
                 <div className="p-6">
-                  <form id="register-form" noValidate>
+                  <form id="register-form" action="/vehiclehistory/dashboard" method="GET">
                     {/* First & Last name */}
                     <div className="flex flex-wrap mx-[-6px] mb-[16px]">
                       <div className="w-1/2 px-[6px]">

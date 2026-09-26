@@ -8,6 +8,7 @@ type NavLink = { label: string; href: string };
 type NavGroup = { label: string; links: NavLink[] };
 
 const UTILITY_LINKS: (NavLink & { external?: boolean })[] = [
+  { label: "My Dashboard", href: "/vehiclehistory/dashboard" },
   { label: "Dealer Sign In", href: "/vehiclehistory/dealer-login" },
   { label: "Dispute", href: "/vehiclehistory/dispute" },
   { label: "Contact Us", href: "/vehiclehistory/contact" },
@@ -110,7 +111,12 @@ function DesktopHeader() {
               const open = openIdx === i;
               const menuId = `ac-nav-menu-${i}`;
               return (
-                <li key={group.label} className="relative">
+                <li
+                  key={group.label}
+                  className="relative group"
+                  onMouseEnter={() => setOpenIdx(i)}
+                  onMouseLeave={() => setOpenIdx(null)}
+                >
                   <button
                     type="button"
                     aria-haspopup="true"
@@ -124,22 +130,24 @@ function DesktopHeader() {
                     {group.label}
                   </button>
                   {open && (
-                    <ul
-                      id={menuId}
-                      className="absolute left-0 top-[calc(100%+2px)] z-[1000] m-0 min-w-[160px] list-none whitespace-nowrap rounded-[5.25px] border border-solid border-[#ccc] bg-white p-0 shadow-[0_0_3px_1px_rgba(0,0,0,0.3)]"
-                    >
-                      {group.links.map((link) => (
-                        <li key={link.href}>
-                          <a
-                            href={link.href}
-                            onClick={close}
-                            className="block px-[15px] py-[7px] text-left text-[15px] leading-[22.5px] text-[#004990] hover:bg-[#f8f9fa]"
-                          >
-                            {link.label}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="absolute left-0 top-full pt-[2px] z-[1000]">
+                      <ul
+                        id={menuId}
+                        className="m-0 min-w-[200px] list-none whitespace-nowrap rounded-[5.25px] border border-solid border-[#ccc] bg-white p-0 shadow-[0_0_3px_1px_rgba(0,0,0,0.3)]"
+                      >
+                        {group.links.map((link) => (
+                          <li key={link.href}>
+                            <a
+                              href={link.href}
+                              onClick={close}
+                              className="block px-[15px] py-[8px] text-left text-[15px] leading-[22.5px] text-[#004990] hover:bg-[#f8f9fa] transition-colors"
+                            >
+                              {link.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
                 </li>
               );
