@@ -48,7 +48,7 @@ export default function VehicleHistoryReportsPage() {
           {/* Top Notice Banner */}
           <div className="mb-6 flex items-center justify-between rounded-[6px] border border-[#d6e4f0] bg-[#f0f6fa] p-3 text-[14px] text-ac-ink shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
             <div className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#004990]/10 text-ac-blue shrink-0">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0b4c4c]/10 text-ac-blue shrink-0">
                 <CarFrontIcon width={18} height={18} />
               </span>
               <div>

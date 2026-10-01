@@ -53,7 +53,7 @@ export default function SubscriptionBenefitsPage() {
           {/* Top Notice Banner */}
           <div className="mb-6 flex items-center justify-between rounded-[6px] border border-[#d6e4f0] bg-[#f0f6fa] p-3 text-[14px] text-ac-ink shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
             <div className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#004990]/10 text-ac-blue shrink-0">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0b4c4c]/10 text-ac-blue shrink-0">
                 <CarFrontIcon width={18} height={18} />
               </span>
               <div>
@@ -174,7 +174,7 @@ export default function SubscriptionBenefitsPage() {
                 />
               </div>
               <div className="flex-1 md:pl-8">
-                <div className="inline-block bg-[#004990] text-white text-[12px] font-bold px-2.5 py-0.5 rounded mb-1">
+                <div className="inline-block bg-[#0b4c4c] text-white text-[12px] font-bold px-2.5 py-0.5 rounded mb-1">
                   BEST VALUE FOR SERIOUS BUYERS & IMPORTERS
                 </div>
                 <h3 className="text-[22px] font-bold text-ac-ink">25 Reports Package</h3>

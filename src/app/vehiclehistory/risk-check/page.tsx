@@ -13,7 +13,7 @@ export default function RiskCheckPage() {
       <SiteHeader />
       <main className="bg-[#f8f9fa] py-12">
         <div className="ac-container">
-          <h1 className="text-3xl font-bold text-[#004990] mb-6">Flood & Accident Risk Check</h1>
+          <h1 className="text-3xl font-bold text-[#0b4c4c] mb-6">Flood & Accident Risk Check</h1>
           
           <div className="bg-white p-8 rounded-lg shadow-sm border border-[#eaeaea]">
             

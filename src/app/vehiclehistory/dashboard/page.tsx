@@ -185,7 +185,7 @@ export default function CustomerDashboardPage() {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex gap-1 mb-6 border-b border-[#af1685]">
+          <div className="flex gap-1 mb-6 border-b border-[#f37920]">
             <button
               type="button"
               onClick={() => setActiveTab("reports")}

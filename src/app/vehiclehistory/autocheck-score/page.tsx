@@ -13,7 +13,7 @@ export default function AutoCheckScorePage() {
       <SiteHeader />
       <main className="bg-[#f8f9fa] py-12">
         <div className="ac-container">
-          <h1 className="text-3xl font-bold text-[#004990] mb-6">The AutoCheck Score</h1>
+          <h1 className="text-3xl font-bold text-[#0b4c4c] mb-6">The AutoCheck Score</h1>
           
           <div className="bg-white p-8 rounded-lg shadow-sm border border-[#eaeaea]">
             <h2 className="text-xl font-bold text-[#333] mb-4">What is the AutoCheck Score?</h2>
@@ -26,7 +26,7 @@ export default function AutoCheckScorePage() {
                  <span className="text-4xl font-bold text-[#28a745]">88</span>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-[#004990] mb-2">How to read the score</h3>
+                <h3 className="text-lg font-bold text-[#0b4c4c] mb-2">How to read the score</h3>
                 <p className="text-gray-700 text-sm">
                   The score typically ranges from 1 to 100. A higher score indicates a better vehicle history. The report also provides a "Score Range," showing the expected scores of similar vehicles (based on make, model, year). If a vehicle's score falls within or above the range, it generally means its history is as good as or better than average.
                 </p>

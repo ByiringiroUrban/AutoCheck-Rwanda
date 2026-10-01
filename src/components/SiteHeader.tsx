@@ -124,7 +124,7 @@ function DesktopHeader() {
                     aria-controls={menuId}
                     onClick={() => setOpenIdx(open ? null : i)}
                     className={`ac-caret h-[44px] cursor-pointer whitespace-nowrap border-0 bg-transparent p-[10px] text-[16px] leading-[24px] ${
-                      open ? "text-[#212529]" : "text-[#004990]"
+                      open ? "text-[#212529]" : "text-[#0b4c4c]"
                     }`}
                   >
                     {group.label}
@@ -140,7 +140,7 @@ function DesktopHeader() {
                             <a
                               href={link.href}
                               onClick={close}
-                              className="block px-[15px] py-[8px] text-left text-[15px] leading-[22.5px] text-[#004990] hover:bg-[#f8f9fa] transition-colors"
+                              className="block px-[15px] py-[8px] text-left text-[15px] leading-[22.5px] text-[#0b4c4c] hover:bg-[#f8f9fa] transition-colors"
                             >
                               {link.label}
                             </a>
@@ -225,7 +225,7 @@ function MobileHeader() {
                       href={link.href}
                       {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                       onClick={closeAccount}
-                      className="block px-[10px] py-[8px] text-right text-[15px] text-[#004990] hover:bg-[#eee] hover:font-medium hover:text-[#0b5191]"
+                      className="block px-[10px] py-[8px] text-right text-[15px] text-[#0b4c4c] hover:bg-[#eee] hover:font-medium hover:text-[#0b5191]"
                     >
                       {link.label}
                     </a>
@@ -259,7 +259,7 @@ function MobileHeader() {
                     type="button"
                     aria-expanded={open}
                     onClick={() => setExpanded(open ? null : i)}
-                    className="ac-caret block w-full cursor-pointer border-0 bg-transparent px-0 py-[8px] text-left text-[16px] text-[#004990]"
+                    className="ac-caret block w-full cursor-pointer border-0 bg-transparent px-0 py-[8px] text-left text-[16px] text-[#0b4c4c]"
                   >
                     {group.label}
                   </button>
@@ -270,7 +270,7 @@ function MobileHeader() {
                           <a
                             href={link.href}
                             onClick={closeMenu}
-                            className="block px-[16px] py-[8px] text-[15px] text-[#004990]"
+                            className="block px-[16px] py-[8px] text-[15px] text-[#0b4c4c]"
                           >
                             {link.label}
                           </a>

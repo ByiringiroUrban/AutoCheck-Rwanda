@@ -14,7 +14,7 @@ export default function VehicleBuybackProtectionPage() {
       <SiteHeader />
       <main className="bg-[#f8f9fa] py-12">
         <div className="ac-container">
-          <h1 className="text-3xl font-bold text-[#004990] mb-6">Vehicle Buyback Protection</h1>
+          <h1 className="text-3xl font-bold text-[#0b4c4c] mb-6">Vehicle Buyback Protection</h1>
           
           <div className="bg-white p-8 rounded-lg shadow-sm border border-[#eaeaea]">
             <div className="flex flex-col md:flex-row gap-8 mb-8 items-start">
@@ -30,7 +30,7 @@ export default function VehicleBuybackProtectionPage() {
               <div className="flex-shrink-0 w-full md:w-[300px] bg-[#f4f9ff] border border-[#cde0f5] p-6 rounded-lg text-center">
                  {/* eslint-disable-next-line @next/next/no-img-element */}
                  <img src="/images/BuybackProtection.png" alt="Buyback Protection Logo" className="h-[80px] w-auto mx-auto mb-4" />
-                 <p className="font-bold text-[#004990]">AutoCheck Assured™</p>
+                 <p className="font-bold text-[#0b4c4c]">AutoCheck Assured™</p>
               </div>
             </div>
 

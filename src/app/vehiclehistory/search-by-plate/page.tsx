@@ -40,7 +40,7 @@ export default function SearchByPlatePage() {
                     name="plate"
                     type="text"
                     placeholder="e.g. RAC 123A, RAE 456B, GR 789C"
-                    className="w-full h-[42px] px-4 text-[15px] border border-[#cbd5e1] rounded focus:outline-none focus:border-[#004990]"
+                    className="w-full h-[42px] px-4 text-[15px] border border-[#cbd5e1] rounded focus:outline-none focus:border-[#0b4c4c]"
                   />
                   <p className="text-[12px] text-gray-500 mt-1">
                     Format: 3 letters, 3 digits, followed by 1 letter (Standard private Rwanda plate).

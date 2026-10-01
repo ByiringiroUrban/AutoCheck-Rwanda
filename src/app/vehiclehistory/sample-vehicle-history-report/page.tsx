@@ -106,7 +106,7 @@ function ScoreGauge({ score }: { score: number }) {
 // ── Section heading bar ─────────────────────────────────────────────────────
 function SectionBar({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-[#1e427a] text-white text-center py-2 px-4 text-[14px] font-bold rounded-t-[6px] mb-0">
+    <div className="bg-[#063838] text-white text-center py-2 px-4 text-[14px] font-bold rounded-t-[6px] mb-0">
       {children}
     </div>
   );
@@ -121,7 +121,7 @@ export default function SampleReportPage() {
         {/* Page label */}
         <div className="bg-white border-b border-solid border-[#ddd] py-3">
           <div className="ac-container text-center">
-            <span className="inline-block bg-[#af1685] text-white text-[12px] font-bold px-4 py-1 rounded-full tracking-wide uppercase">
+            <span className="inline-block bg-[#f37920] text-white text-[12px] font-bold px-4 py-1 rounded-full tracking-wide uppercase">
               Sample Report — for illustration purposes only
             </span>
           </div>
@@ -138,12 +138,12 @@ export default function SampleReportPage() {
               className="relative px-5 pt-4 pb-4"
               style={{
                 background: "linear-gradient(135deg, #f0f4ff 0%, #e8edf8 60%, #f5f0ff 100%)",
-                borderBottom: "3px solid #1e427a",
+                borderBottom: "3px solid #063838",
               }}
             >
               {/* Decorative blobs */}
               <div className="absolute top-0 right-0 w-48 h-32 opacity-20 pointer-events-none"
-                style={{ background: "radial-gradient(circle at 80% 20%, #af1685 0%, transparent 70%)" }} />
+                style={{ background: "radial-gradient(circle at 80% 20%, #f37920 0%, transparent 70%)" }} />
 
               <div className="flex flex-wrap items-start justify-between gap-4">
                 {/* Left: AutoCheck Rwanda logo */}
@@ -160,11 +160,11 @@ export default function SampleReportPage() {
 
                 {/* Centre: report meta */}
                 <div className="text-center flex-1 text-[11px] text-[#444] leading-[1.6]">
-                  <p className="m-0 font-semibold text-[#1e427a]">
+                  <p className="m-0 font-semibold text-[#063838]">
                     This report was generated on <span className="font-bold">August 15, 2024 | 10:22:47 CAT</span>
                   </p>
                   <p className="m-0">and brought to you by:</p>
-                  <span className="inline-block mt-1 bg-[#1e427a] text-white text-[11px] font-bold px-3 py-[2px] rounded">
+                  <span className="inline-block mt-1 bg-[#063838] text-white text-[11px] font-bold px-3 py-[2px] rounded">
                     Kigali Elite Dealers
                   </span>
                   <p className="m-0 mt-1">
@@ -181,7 +181,7 @@ export default function SampleReportPage() {
             {/* ── PRE-QUALIFY BANNER ── */}
             <div
               className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
-              style={{ background: "linear-gradient(90deg, #1e427a 0%, #2d60b0 100%)" }}
+              style={{ background: "linear-gradient(90deg, #063838 0%, #2d60b0 100%)" }}
             >
               <div className="text-white">
                 <p className="m-0 text-[16px] font-bold">Pre-qualify Online</p>
@@ -192,7 +192,7 @@ export default function SampleReportPage() {
               </div>
               <button
                 type="button"
-                className="flex-shrink-0 bg-[#af1685] hover:bg-[#d81ba4] text-white font-bold text-[14px] px-6 py-2 rounded-full cursor-pointer border-0 transition-colors duration-150 shadow"
+                className="flex-shrink-0 bg-[#f37920] hover:bg-[#d96515] text-white font-bold text-[14px] px-6 py-2 rounded-full cursor-pointer border-0 transition-colors duration-150 shadow"
               >
                 Get Prequalified! →
               </button>
@@ -227,7 +227,7 @@ export default function SampleReportPage() {
                 <div className="flex flex-col items-center min-w-[110px]">
                   <div className="flex gap-[-4px] mb-1">
                     {[1, 2].map((i) => (
-                      <svg key={i} width="28" height="28" viewBox="0 0 24 24" fill="#1e427a" className={i > 1 ? "-ml-2" : ""}>
+                      <svg key={i} width="28" height="28" viewBox="0 0 24 24" fill="#063838" className={i > 1 ? "-ml-2" : ""}>
                         <circle cx="12" cy="7" r="4" />
                         <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                       </svg>

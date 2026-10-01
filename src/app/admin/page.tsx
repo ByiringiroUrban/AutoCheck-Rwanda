@@ -545,10 +545,10 @@ export default function AdminDashboardPage() {
           </button>
 
           <div className="flex items-center gap-2">
-            <Link href="/" className="font-extrabold text-[19px] tracking-tight text-[#004990] no-underline flex items-center gap-1.5">
+            <Link href="/" className="font-extrabold text-[19px] tracking-tight text-[#0b4c4c] no-underline flex items-center gap-1.5">
               <span className="text-ac-magenta font-black">✓</span>
               <span>AutoCheck</span>
-              <span className="text-[12px] font-bold px-1.5 py-0.5 rounded bg-[#004990] text-white uppercase tracking-wider ml-1">
+              <span className="text-[12px] font-bold px-1.5 py-0.5 rounded bg-[#0b4c4c] text-white uppercase tracking-wider ml-1">
                 Admin
               </span>
             </Link>
@@ -858,7 +858,7 @@ export default function AdminDashboardPage() {
           {activeTab === "overview" && (
             <div className="space-y-6">
               {/* Welcome & Quick Action Banner */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-[#004990] to-[#1e427a] text-white p-6 rounded-2xl shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-[#0b4c4c] to-[#063838] text-white p-6 rounded-2xl shadow-sm">
                 <div>
                   <h1 className="text-2xl font-bold mb-1">
                     AutoCheck Rwanda Platform Control
@@ -881,7 +881,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("reports")}
-                    className="flex items-center gap-2 bg-ac-magenta hover:bg-[#d81ba4] text-white font-semibold px-4 py-2.5 rounded-lg text-[13px] shadow-sm transition cursor-pointer border-0"
+                    className="flex items-center gap-2 bg-ac-magenta hover:bg-[#d96515] text-white font-semibold px-4 py-2.5 rounded-lg text-[13px] shadow-sm transition cursor-pointer border-0"
                   >
                     <CarFrontIcon width={16} height={16} />
                     <span>+ Generate Report</span>
@@ -992,7 +992,7 @@ export default function AdminDashboardPage() {
                         </span>
                         <div
                           style={{ height: bar.height }}
-                          className="w-full max-w-[42px] bg-gradient-to-t from-ac-blue to-[#1e427a] rounded-t-md transition-all duration-300 group-hover:from-ac-magenta group-hover:to-[#d81ba4]"
+                          className="w-full max-w-[42px] bg-gradient-to-t from-ac-blue to-[#063838] rounded-t-md transition-all duration-300 group-hover:from-ac-magenta group-hover:to-[#d96515]"
                         />
                         <span className="text-[12px] font-semibold text-gray-500">
                           {bar.day}
