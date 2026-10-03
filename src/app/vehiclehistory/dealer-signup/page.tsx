@@ -1,16 +1,42 @@
 "use client";
 
 import { useState } from "react";
+import { ApiError } from "@/services/api";
+import { endpoints } from "@/services/endpoints";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import Link from "next/link";
 
 export default function DealerSignupPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    const data = new FormData(e.currentTarget);
+    const location = String(data.get("location") || "").trim();
+    if (location.length < 2) {
+      setError("Enter the showroom or yard location.");
+      return;
+    }
+    setPending(true);
+    setError(null);
+    try {
+      await endpoints.applyOrganization({
+        name: String(data.get("name") || ""),
+        type: "DEALER",
+        tin: String(data.get("tin") || ""),
+        location,
+        email: String(data.get("email") || ""),
+        phone: String(data.get("phone") || ""),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "The application could not be submitted.");
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -92,7 +118,7 @@ export default function DealerSignupPage() {
                     <h2 className="text-xl font-bold text-ac-ink mb-4">
                       Request Dealership Membership
                     </h2>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form method="post" onSubmit={handleSubmit} className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[13px] font-semibold text-ac-ink mb-1">
@@ -100,6 +126,7 @@ export default function DealerSignupPage() {
                           </label>
                           <input
                             required
+                            name="name"
                             type="text"
                             placeholder="e.g. Kigali Motors Ltd"
                             className="w-full h-[38px] px-3 border border-[#cbd5e1] rounded text-[14px] focus:outline-none focus:border-ac-blue"
@@ -111,6 +138,7 @@ export default function DealerSignupPage() {
                           </label>
                           <input
                             required
+                            name="tin"
                             type="text"
                             placeholder="9-digit RRA TIN"
                             className="w-full h-[38px] px-3 border border-[#cbd5e1] rounded text-[14px] focus:outline-none focus:border-ac-blue"
@@ -149,6 +177,7 @@ export default function DealerSignupPage() {
                           </label>
                           <input
                             required
+                            name="phone"
                             type="tel"
                             placeholder="+250 78... / +250 72..."
                             className="w-full h-[38px] px-3 border border-[#cbd5e1] rounded text-[14px] focus:outline-none focus:border-ac-blue"
@@ -160,6 +189,7 @@ export default function DealerSignupPage() {
                           </label>
                           <input
                             required
+                            name="email"
                             type="email"
                             placeholder="dealer@company.rw"
                             className="w-full h-[38px] px-3 border border-[#cbd5e1] rounded text-[14px] focus:outline-none focus:border-ac-blue"
@@ -172,6 +202,8 @@ export default function DealerSignupPage() {
                           Showroom / Yard Location in Rwanda
                         </label>
                         <input
+                          name="location"
+                          required
                           type="text"
                           placeholder="e.g. Gikondo, Nyarutarama, Gatsata, Musanze"
                           className="w-full h-[38px] px-3 border border-[#cbd5e1] rounded text-[14px] focus:outline-none focus:border-ac-blue"
@@ -191,8 +223,9 @@ export default function DealerSignupPage() {
                       </div>
 
                       <div className="pt-2">
-                        <button type="submit" className="ac-btn w-full py-3 font-semibold text-[15px]">
-                          Submit Dealer Application
+                        {error ? <p className="text-[13px] text-ac-danger">{error}</p> : null}
+                        <button type="submit" className="ac-btn w-full py-3 font-semibold text-[15px]" disabled={pending}>
+                          {pending ? "Submitting…" : "Submit Dealer Application"}
                         </button>
                       </div>
                     </form>

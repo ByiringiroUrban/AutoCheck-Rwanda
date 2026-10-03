@@ -3,17 +3,30 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CartFillIcon, HamburgerIcon, PersonFillIcon } from "@/components/icons";
+import { useAuth } from "@/hooks/useAuth";
+import { homeForRole } from "@/utils/roles";
 
 type NavLink = { label: string; href: string };
 type NavGroup = { label: string; links: NavLink[] };
 
-const UTILITY_LINKS: (NavLink & { external?: boolean })[] = [
-  { label: "My Dashboard", href: "/vehiclehistory/dashboard" },
-  { label: "Dealer Sign In", href: "/vehiclehistory/dealer-login" },
-  { label: "Dispute", href: "/vehiclehistory/dispute" },
-  { label: "Contact Us", href: "/vehiclehistory/contact" },
-  { label: "Sign In", href: "/vehiclehistory/login" },
-];
+function useUtilityLinks(): (NavLink & { onClick?: () => void })[] {
+  const { isAuthenticated, logout, user } = useAuth();
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
+  if (!ready || !isAuthenticated || !user) {
+    return [
+      { label: "Sample Report", href: "/vehiclehistory/sample-vehicle-history-report" },
+      { label: "VIN Guide", href: "/vehiclehistory/vin-guide" },
+      { label: "FAQ", href: "/vehiclehistory/faq" },
+      { label: "Contact Us", href: "/vehiclehistory/contact" },
+      { label: "Sign In", href: "/vehiclehistory/login" },
+    ];
+  }
+  return [
+    { label: "My Dashboard", href: homeForRole(user.role) },
+    { label: "Sign Out", href: "/vehiclehistory/login", onClick: () => void logout() },
+  ];
+}
 
 const NAV_GROUPS: NavGroup[] = [
   {
@@ -62,6 +75,7 @@ function useDismiss(
 }
 
 function DesktopHeader() {
+  const utilityLinks = useUtilityLinks();
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const navRef = useRef<HTMLUListElement>(null);
   const close = useCallback(() => setOpenIdx(null), []);
@@ -72,7 +86,7 @@ function DesktopHeader() {
       {/* Utility row */}
       <div className="ac-container flex h-[35px] justify-end">
         <ul className="m-0 flex list-none p-0">
-          {UTILITY_LINKS.map((link, i) => (
+          {utilityLinks.map((link, i) => (
             <li key={link.label} className="flex">
               {i > 0 && (
                 <span aria-hidden="true" className="mt-[7px] text-[14px] leading-[21px] text-[#212529]">
@@ -81,7 +95,11 @@ function DesktopHeader() {
               )}
               <a
                 href={link.href}
-                {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                onClick={(event) => {
+                  if (!link.onClick) return;
+                  event.preventDefault();
+                  link.onClick();
+                }}
                 className="block h-[35px] p-[7px] text-[14px] leading-[21px] text-[#212529] no-underline transition-colors duration-150 ease-in-out hover:underline"
               >
                 {link.label}
@@ -163,6 +181,7 @@ const MOBILE_ICON_BTN =
   "flex h-[35px] w-[36px] items-center justify-center rounded-[5.25px] border border-solid border-[#ccc] bg-[#f8f9fa] px-[6px] py-0 text-[rgb(134,135,135)]";
 
 function MobileHeader() {
+  const utilityLinks = useUtilityLinks();
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -219,12 +238,16 @@ function MobileHeader() {
             </button>
             {accountOpen && (
               <ul className="absolute right-0 top-[calc(100%+2px)] z-[1000] m-0 w-[200px] list-none border border-solid border-[#ccc] bg-white p-0 shadow-[0_0_5px_1px_rgba(0,0,0,0.3)]">
-                {UTILITY_LINKS.map((link) => (
+                {utilityLinks.map((link) => (
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                      onClick={closeAccount}
+                      onClick={(event) => {
+                        closeAccount();
+                        if (!link.onClick) return;
+                        event.preventDefault();
+                        link.onClick();
+                      }}
                       className="block px-[10px] py-[8px] text-right text-[15px] text-[#0b4c4c] hover:bg-[#eee] hover:font-medium hover:text-[#0b5191]"
                     >
                       {link.label}

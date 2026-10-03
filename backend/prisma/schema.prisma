@@ -1,0 +1,509 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider  = "prisma-client-py"
+  interface = "asyncio"
+}
+
+enum Role {
+  PUBLIC
+  OWNER
+  GARAGE_STAFF
+  GARAGE_MANAGER
+  DEALER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+}
+
+enum OrgType {
+  GARAGE
+  DEALER
+}
+
+enum OrgStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum OrgMemberRole {
+  STAFF
+  MANAGER
+  OWNER
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum VehicleStatus {
+  ACTIVE
+  FLAGGED
+  STOLEN
+  SCRAPPED
+}
+
+enum OwnershipStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RecordSource {
+  APPROVED_GARAGE
+  VEHICLE_OWNER
+  SYSTEM_ADMIN
+  EXTERNAL_PARTNER
+  LEGACY_IMPORT
+}
+
+enum InspectionStatus {
+  DRAFT
+  COMPLETED
+  CANCELLED
+}
+
+enum ItemCondition {
+  PASS
+  FAIL
+  WARNING
+  NOT_APPLICABLE
+}
+
+enum ItemSeverity {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AIStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum FindingSeverity {
+  MINOR
+  MODERATE
+  SEVERE
+}
+
+enum IncidentType {
+  ACCIDENT
+  THEFT
+  FLOOD_DAMAGE
+  FIRE_DAMAGE
+  HAIL_DAMAGE
+  STRUCTURAL_DAMAGE
+}
+
+enum IncidentSeverity {
+  MINOR
+  MODERATE
+  MAJOR
+  SEVERE
+}
+
+enum ReportStatus {
+  GENERATED
+  ARCHIVED
+}
+
+enum DisputeTargetType {
+  SERVICE_RECORD
+  INSPECTION
+  MILEAGE
+  INCIDENT
+  VEHICLE_DETAILS
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  REJECTED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  phone         String?
+  password_hash String
+  first_name    String
+  last_name     String
+  role          Role           @default(OWNER)
+  status        UserStatus     @default(ACTIVE)
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+
+  memberships   OrganizationMember[]
+  ownerships    VehicleOwnership[]
+  service_records ServiceRecord[]
+  inspections   Inspection[]
+  reports       Report[]
+  disputes      Dispute[]
+  tickets       SupportTicket[]
+  audit_logs    AuditLog[]
+
+  @@map("users")
+}
+
+model Organization {
+  id         String     @id @default(uuid())
+  type       OrgType    @default(GARAGE)
+  name       String
+  tin        String     @unique
+  location   String
+  email      String
+  phone      String
+  status     OrgStatus  @default(PENDING)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  members         OrganizationMember[]
+  service_records ServiceRecord[]
+  inspections     Inspection[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id              String        @id @default(uuid())
+  organization_id String
+  user_id         String
+  role            OrgMemberRole @default(STAFF)
+  status          MemberStatus  @default(ACTIVE)
+  created_at      DateTime      @default(now())
+
+  organization Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([organization_id, user_id])
+  @@map("organization_members")
+}
+
+model Vehicle {
+  id         String        @id @default(uuid())
+  vin        String        @unique
+  make       String
+  model      String
+  year       Int
+  body_type  String
+  fuel_type  String
+  color      String
+  status     VehicleStatus @default(ACTIVE)
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+
+  plates          VehiclePlate[]
+  ownerships      VehicleOwnership[]
+  service_records ServiceRecord[]
+  inspections     Inspection[]
+  images          VehicleImage[]
+  ai_inspections  AIInspection[]
+  mileage_records MileageRecord[]
+  incident_records IncidentRecord[]
+  reports         Report[]
+  disputes        Dispute[]
+
+  @@index([vin])
+  @@map("vehicles")
+}
+
+model VehiclePlate {
+  id           String    @id @default(uuid())
+  vehicle_id   String
+  plate_number String
+  start_date   DateTime  @default(now())
+  end_date     DateTime?
+  is_current   Boolean   @default(true)
+  created_at   DateTime  @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+
+  @@index([plate_number])
+  @@index([vehicle_id])
+  @@map("vehicle_plates")
+}
+
+model VehicleOwnership {
+  id           String          @id @default(uuid())
+  vehicle_id   String
+  user_id      String
+  verified     Boolean         @default(false)
+  start_date   DateTime        @default(now())
+  end_date     DateTime?
+  evidence_url String?
+  status       OwnershipStatus @default(PENDING)
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([vehicle_id])
+  @@index([user_id])
+  @@map("vehicle_ownerships")
+}
+
+model ServiceRecord {
+  id              String       @id @default(uuid())
+  vehicle_id      String
+  organization_id String?
+  mileage         Int
+  service_type    String
+  description     String
+  service_date    DateTime     @default(now())
+  source_type     RecordSource @default(APPROVED_GARAGE)
+  created_by      String
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  vehicle      Vehicle       @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  organization Organization? @relation(fields: [organization_id], references: [id], onDelete: SetNull)
+  creator      User          @relation(fields: [created_by], references: [id], onDelete: Cascade)
+
+  @@index([vehicle_id])
+  @@index([organization_id])
+  @@map("service_records")
+}
+
+model Inspection {
+  id              String           @id @default(uuid())
+  vehicle_id      String
+  organization_id String?
+  mileage         Int
+  inspection_type String
+  status          InspectionStatus @default(DRAFT)
+  summary         String?
+  inspected_at    DateTime         @default(now())
+  created_by      String
+  created_at      DateTime         @default(now())
+
+  vehicle        Vehicle          @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  organization   Organization?    @relation(fields: [organization_id], references: [id], onDelete: SetNull)
+  creator        User             @relation(fields: [created_by], references: [id], onDelete: Cascade)
+  items          InspectionItem[]
+  images         VehicleImage[]
+  ai_inspections AIInspection[]
+
+  @@index([vehicle_id])
+  @@index([organization_id])
+  @@map("inspections")
+}
+
+model InspectionItem {
+  id            String        @id @default(uuid())
+  inspection_id String
+  category      String
+  item          String
+  condition     ItemCondition @default(PASS)
+  severity      ItemSeverity  @default(NONE)
+  notes         String?
+  created_at    DateTime      @default(now())
+
+  inspection Inspection @relation(fields: [inspection_id], references: [id], onDelete: Cascade)
+
+  @@index([inspection_id])
+  @@map("inspection_items")
+}
+
+model VehicleImage {
+  id            String      @id @default(uuid())
+  vehicle_id    String
+  inspection_id String?
+  uploaded_by   String
+  image_url     String
+  view_type     String
+  source_type   String      @default("GARAGE")
+  created_at    DateTime    @default(now())
+
+  vehicle    Vehicle       @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  inspection Inspection?   @relation(fields: [inspection_id], references: [id], onDelete: SetNull)
+  findings   AIFinding[]
+
+  @@index([vehicle_id])
+  @@index([inspection_id])
+  @@map("vehicle_images")
+}
+
+model AIInspection {
+  id            String    @id @default(uuid())
+  vehicle_id    String
+  inspection_id String?
+  model_version String    @default("autocheck-vision-v1.0")
+  status        AIStatus  @default(PENDING)
+  error_message String?
+  started_at    DateTime?
+  completed_at  DateTime?
+  created_at    DateTime  @default(now())
+
+  vehicle    Vehicle      @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  inspection Inspection?  @relation(fields: [inspection_id], references: [id], onDelete: SetNull)
+  findings   AIFinding[]
+
+  @@index([vehicle_id])
+  @@index([inspection_id])
+  @@map("ai_inspections")
+}
+
+model AIFinding {
+  id               String          @id @default(uuid())
+  ai_inspection_id String
+  image_id         String?
+  defect_type      String
+  location         String
+  severity         FindingSeverity @default(MINOR)
+  confidence       Float
+  bbox_json        String?
+  created_at       DateTime        @default(now())
+
+  ai_inspection AIInspection  @relation(fields: [ai_inspection_id], references: [id], onDelete: Cascade)
+  image         VehicleImage? @relation(fields: [image_id], references: [id], onDelete: SetNull)
+
+  @@index([ai_inspection_id])
+  @@map("ai_findings")
+}
+
+model MileageRecord {
+  id          String   @id @default(uuid())
+  vehicle_id  String
+  mileage     Int
+  recorded_at DateTime @default(now())
+  source_type String
+  source_id   String?
+  created_at  DateTime @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+
+  @@index([vehicle_id, recorded_at])
+  @@map("mileage_records")
+}
+
+model IncidentRecord {
+  id            String           @id @default(uuid())
+  vehicle_id    String
+  incident_type IncidentType
+  severity      IncidentSeverity @default(MINOR)
+  occurred_at   DateTime         @default(now())
+  source_type   String
+  description   String
+  created_at    DateTime         @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+
+  @@index([vehicle_id])
+  @@map("incident_records")
+}
+
+model Report {
+  id                   String       @id @default(uuid())
+  vehicle_id           String
+  requested_by         String?
+  generated_at         DateTime     @default(now())
+  score                Int
+  score_breakdown_json String
+  snapshot_json        String
+  status               ReportStatus @default(GENERATED)
+  created_at           DateTime     @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [requested_by], references: [id], onDelete: SetNull)
+
+  @@index([vehicle_id])
+  @@index([requested_by])
+  @@map("reports")
+}
+
+model Dispute {
+  id               String            @id @default(uuid())
+  vehicle_id       String
+  user_id          String
+  target_type      DisputeTargetType
+  target_id        String
+  reason           String
+  details          String
+  evidence_url     String?
+  status           DisputeStatus     @default(OPEN)
+  resolution_notes String?
+  resolved_by      String?
+  resolved_at      DateTime?
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([vehicle_id])
+  @@index([user_id])
+  @@index([status])
+  @@map("disputes")
+}
+
+model SupportTicket {
+  id         String       @id @default(uuid())
+  user_id    String
+  type       String
+  subject    String
+  message    String
+  status     TicketStatus @default(OPEN)
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("support_tickets")
+}
+
+model DealerApplication {
+  id            String   @id @default(uuid())
+  business_name String
+  tin           String
+  contact_name  String
+  email         String
+  phone         String
+  location      String
+  status        String   @default("PENDING")
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("dealer_applications")
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  actor_user_id String?
+  action        String
+  entity_type   String
+  entity_id     String?
+  metadata_json String?
+  ip_address    String?
+  created_at    DateTime @default(now())
+
+  actor User? @relation(fields: [actor_user_id], references: [id], onDelete: SetNull)
+
+  @@index([actor_user_id])
+  @@index([entity_type, entity_id])
+  @@map("audit_logs")
+}

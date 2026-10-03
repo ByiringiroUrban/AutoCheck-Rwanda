@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { DealerLoginForm } from "@/components/auth/DealerLoginForm";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -55,61 +56,7 @@ export default function DealerLoginPage() {
 
                 {/* Form */}
                 <div className="px-8 py-8">
-                  <form noValidate>
-                    <div className="mb-[18px]">
-                      <label htmlFor="dealer-email" className="block mb-[6px] text-[13px] font-semibold text-[#444]">
-                        Email Address / Customer ID
-                      </label>
-                      <input
-                        id="dealer-email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        placeholder="Enter your email or customer ID"
-                        className="block w-full h-[40px] px-[14px] text-[14px] text-ac-ink bg-white border border-solid border-ac-input-border rounded-[5px] focus:outline-0 focus:border-[#86b7fe] focus:shadow-[0_0_0_0.25rem_rgba(13,110,253,0.25)] transition-all duration-150"
-                      />
-                      <a href="/vehiclehistory/forgot-customer-id" className="mt-1 block text-right text-[12px] text-ac-blue hover:underline">
-                        Forgot Customer ID?
-                      </a>
-                    </div>
-
-                    <div className="mb-[18px]">
-                      <label htmlFor="dealer-password" className="block mb-[6px] text-[13px] font-semibold text-[#444]">
-                        Password
-                      </label>
-                      <input
-                        id="dealer-password"
-                        name="password"
-                        type="password"
-                        autoComplete="current-password"
-                        placeholder="Enter your password"
-                        className="block w-full h-[40px] px-[14px] text-[14px] text-ac-ink bg-white border border-solid border-ac-input-border rounded-[5px] focus:outline-0 focus:border-[#86b7fe] focus:shadow-[0_0_0_0.25rem_rgba(13,110,253,0.25)] transition-all duration-150"
-                      />
-                      <a href="/vehiclehistory/forgot-password" className="mt-1 block text-right text-[12px] text-ac-blue hover:underline">
-                        Forgot Password?
-                      </a>
-                    </div>
-
-                    <div className="mb-[22px] flex items-center gap-2">
-                      <input
-                        id="remember-me"
-                        name="remember"
-                        type="checkbox"
-                        className="h-4 w-4 accent-ac-magenta cursor-pointer"
-                      />
-                      <label htmlFor="remember-me" className="text-[13px] text-[#555] cursor-pointer select-none">
-                        Remember My Customer ID
-                      </label>
-                    </div>
-
-                    <button
-                      type="submit"
-                      id="dealer-login-submit"
-                      className="ac-btn w-full text-[15px] font-semibold h-[44px]"
-                    >
-                      Sign In
-                    </button>
-                  </form>
+                  <DealerLoginForm />
 
                   <hr className="my-6 border-0 border-t border-solid border-[#eee]" />
 

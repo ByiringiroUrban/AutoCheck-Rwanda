@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, type FormEvent } from "react";
+import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
+import { validatePlate, validateVin } from "@/utils/validation";
 
 // ── Slide data ────────────────────────────────────────────────────────────────
 const SLIDES = [
@@ -117,15 +119,43 @@ export function HeroSearch() {
   const [vinError, setVinError] = useState(false);
   const [plate, setPlate] = useState("");
   const [plateError, setPlateError] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [busy, setBusy] = useState<"vin" | "plate" | null>(null);
 
-  const onVinSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onVinSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setVinError(vin.trim() === "");
+    const check = validateVin(vin);
+    setVinError(!check.ok);
+    setFormError(check.ok ? null : check.message || null);
+    if (!check.ok || !check.value) return;
+    setVin(check.value);
+    setBusy("vin");
+    try {
+      const vehicle = await lookupVehicle("vin", check.value);
+      window.location.assign(`/search-results?vin=${encodeURIComponent(vehicle.vin)}`);
+    } catch (error) {
+      setFormError(friendlySearchError(error));
+    } finally {
+      setBusy(null);
+    }
   };
 
-  const onPlateSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onPlateSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setPlateError(plate.trim() === "");
+    const check = validatePlate(plate);
+    setPlateError(!check.ok);
+    setFormError(check.ok ? null : check.message || null);
+    if (!check.ok || !check.value) return;
+    setPlate(check.value);
+    setBusy("plate");
+    try {
+      const vehicle = await lookupVehicle("plate", check.value);
+      window.location.assign(`/search-results?plate=${encodeURIComponent(vehicle.current_plate || check.value)}`);
+    } catch (error) {
+      setFormError(friendlySearchError(error));
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
@@ -173,7 +203,7 @@ export function HeroSearch() {
                 </p>
 
                 {/* VIN search */}
-                <form noValidate onSubmit={onVinSubmit}>
+                <form method="post" noValidate onSubmit={onVinSubmit}>
                   <h4 className="m-0 pb-[10px] text-[16.8px] font-bold leading-[21.84px] text-ac-ink">
                     Search by VIN
                     <span className={`${helpLink} p-[15px]`}>
@@ -202,14 +232,14 @@ export function HeroSearch() {
                         />
                         {vinError && (
                           <div className={errorText}>
-                            Please enter a vehicle identification number to continue
+                            {formError || "Please enter a vehicle identification number to continue"}
                           </div>
                         )}
                       </div>
                     </div>
                     <div className={`${col} w-full sm:w-1/3`}>
-                      <button type="submit" className="ac-btn w-full">
-                        Get Report
+                      <button type="submit" className="ac-btn w-full" disabled={busy === "vin"}>
+                        {busy === "vin" ? "Searching…" : "Get Report"}
                       </button>
                     </div>
                   </div>
@@ -224,7 +254,7 @@ export function HeroSearch() {
                 </div>
 
                 {/* Rwanda Plate search */}
-                <form noValidate onSubmit={onPlateSubmit}>
+                <form method="post" noValidate onSubmit={onPlateSubmit}>
                   <h4 className="m-[7px] p-0 text-[16.8px] font-bold leading-[21.84px] text-ac-ink">
                     Search by Rwanda Plate Number
                   </h4>
@@ -248,13 +278,14 @@ export function HeroSearch() {
                           }`}
                         />
                         {plateError && (
-                          <div className={errorText}>Please enter a Rwanda plate number</div>
+                          <div className={errorText}>{formError || "Please enter a Rwanda plate number"}</div>
                         )}
+                        {!vinError && !plateError && formError ? <div className={errorText}>{formError}</div> : null}
                       </div>
                     </div>
                     <div className={`${col} w-full sm:w-4/12`}>
-                      <button type="submit" className="ac-btn w-full">
-                        Get Report
+                      <button type="submit" className="ac-btn w-full" disabled={busy === "plate"}>
+                        {busy === "plate" ? "Searching…" : "Get Report"}
                       </button>
                     </div>
                   </div>

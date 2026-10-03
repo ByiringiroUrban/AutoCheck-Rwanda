@@ -12,6 +12,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
+import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
+import { validatePlate, validateVin } from "@/utils/validation";
 
 const inputBase =
   "block w-full h-[34px] px-[14px] py-[6px] text-[14px] leading-[14px] text-ac-ink bg-white border border-solid rounded-none placeholder:text-[rgba(33,37,41,0.65)] focus:outline-0 focus:border-[#86b7fe] focus:shadow-[0_0_0_0.25rem_rgba(13,110,253,0.25)] transition-[border-color,box-shadow] duration-150";
@@ -24,23 +26,39 @@ export default function SubscriptionBenefitsPage() {
   const [plate, setPlate] = useState("");
   const [plateError, setPlateError] = useState(false);
 
-  const onVinSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [searchError, setSearchError] = useState<string | null>(null);
+
+  const onVinSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (vin.trim() === "") {
+    const check = validateVin(vin);
+    if (!check.ok || !check.value) {
       setVinError(true);
-    } else {
-      setVinError(false);
-      window.location.href = `/vehiclehistory/sample-vehicle-history-report?vin=${encodeURIComponent(vin.trim())}`;
+      setSearchError(check.message || "Enter a valid VIN.");
+      return;
+    }
+    setVinError(false);
+    try {
+      const vehicle = await lookupVehicle("vin", check.value);
+      window.location.assign(`/search-results?vin=${encodeURIComponent(vehicle.vin)}`);
+    } catch (error) {
+      setSearchError(friendlySearchError(error));
     }
   };
 
-  const onPlateSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onPlateSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (plate.trim() === "") {
+    const check = validatePlate(plate);
+    if (!check.ok || !check.value) {
       setPlateError(true);
-    } else {
-      setPlateError(false);
-      window.location.href = `/vehiclehistory/sample-vehicle-history-report?plate=${encodeURIComponent(plate.trim())}`;
+      setSearchError(check.message || "Enter a Rwanda plate.");
+      return;
+    }
+    setPlateError(false);
+    try {
+      const vehicle = await lookupVehicle("plate", check.value);
+      window.location.assign(`/search-results?plate=${encodeURIComponent(vehicle.current_plate || check.value)}`);
+    } catch (error) {
+      setSearchError(friendlySearchError(error));
     }
   };
 
@@ -245,7 +263,8 @@ export default function SubscriptionBenefitsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                   <div className="lg:col-span-8">
                     {/* VIN Search */}
-                    <form noValidate onSubmit={onVinSubmit} className="mb-6">
+                    {searchError ? <p className="mb-3 text-[13px] text-ac-danger">{searchError}</p> : null}
+                    <form method="post" noValidate onSubmit={onVinSubmit} className="mb-6">
                       <div className="mb-2 flex items-center justify-between">
                         <span className="text-[16px] font-bold text-ac-ink">Search by VIN</span>
                         <Link
@@ -291,7 +310,7 @@ export default function SubscriptionBenefitsPage() {
                     </div>
 
                     {/* Plate Search */}
-                    <form noValidate onSubmit={onPlateSubmit} className="mb-4">
+                    <form method="post" noValidate onSubmit={onPlateSubmit} className="mb-4">
                       <div className="mb-2 flex items-center justify-between">
                         <span className="text-[16px] font-bold text-ac-ink">
                           Search by Rwanda License Plate

@@ -130,3 +130,11 @@ img {
   border-left: 4.5px solid transparent;
 }
 }
+
+@keyframes ac-logo-zoom {
+  0%, 100% { transform: scale(0.82); }
+  50% { transform: scale(1.08); }
+}
+.ac-logo-zoom {
+  animation: ac-logo-zoom 1.15s ease-in-out infinite;
+}
