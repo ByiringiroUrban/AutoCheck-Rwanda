@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, status, Request
+from fastapi import APIRouter, Depends, status, Request, Header
+from typing import Optional
 from prisma import Prisma
 from app.db.session import get_db
 from app.services.auth_service import AuthService
@@ -9,7 +10,9 @@ from app.schemas.auth import (
     Token,
     RefreshTokenRequest,
     PasswordResetRequest,
+    PasswordResetVerifyOtpRequest,
     PasswordResetConfirm,
+    PasswordResetVerifyResponse,
     UserResponse,
 )
 from app.schemas.common import MessageResponse
@@ -77,27 +80,59 @@ async def logout(
     db: Prisma = Depends(get_db)
 ):
     """Invalidate session / logout."""
-    return MessageResponse(message="Successfully logged out.")
+    return MessageResponse(message="Successfully logged out.", success=True)
 
 
 @router.post("/forgot-password", response_model=MessageResponse)
 async def forgot_password(
     reset_req: PasswordResetRequest,
+    request: Request,
+    db: Prisma = Depends(get_db),
+    origin: Optional[str] = Header(None)
+):
+    """
+    Start password reset flow. Sends a 6-digit verification code (OTP) via email.
+    Always returns generic success message to prevent user enumeration.
+    """
+    client_origin = origin or request.headers.get("origin") or request.headers.get("referer")
+    auth_service = AuthService(db)
+    msg = await auth_service.request_password_reset(reset_req, origin=client_origin)
+    return MessageResponse(message=msg, success=True)
+
+
+@router.post("/verify-otp", response_model=PasswordResetVerifyResponse)
+async def verify_reset_otp(
+    verify_in: PasswordResetVerifyOtpRequest,
     db: Prisma = Depends(get_db)
 ):
-    """Start password reset flow. Returns generic response to prevent account enumeration."""
-    return MessageResponse(
-        message="If this email is registered, instructions to reset your password have been sent."
-    )
+    """
+    Verify if a 6-digit OTP code is valid and not expired for the provided email.
+    """
+    auth_service = AuthService(db)
+    return await auth_service.verify_password_reset_otp(verify_in)
 
 
 @router.post("/reset-password", response_model=MessageResponse)
 async def reset_password(
     confirm_in: PasswordResetConfirm,
+    request: Request,
     db: Prisma = Depends(get_db)
 ):
-    """Complete password reset using secure token."""
-    return MessageResponse(message="Password has been reset successfully.")
+    """
+    Complete password reset using email, 6-digit OTP verification code, and new password.
+    """
+    auth_service = AuthService(db)
+    msg = await auth_service.reset_password(confirm_in)
+    
+    audit_service = AuditService(db)
+    await audit_service.log_action(
+        actor_user_id=None,
+        action="PASSWORD_RESET_COMPLETED",
+        entity_type="AUTH",
+        metadata={"email": confirm_in.email},
+        ip_address=request.client.host if request.client else None
+    )
+    return MessageResponse(message=msg, success=True)
 
 
 @router.get("/me", response_model=UserResponse)

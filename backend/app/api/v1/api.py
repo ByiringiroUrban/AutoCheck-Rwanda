@@ -10,11 +10,15 @@ from app.api.v1.reports import router as reports_router
 from app.api.v1.disputes import router as disputes_router
 from app.api.v1.support import router as support_router
 from app.api.v1.admin import router as admin_router
+from app.api.v1.users import router as users_router
+from app.api.v1.uploads import router as uploads_router
 
 api_router = APIRouter()
 
 # Register modular routers
 api_router.include_router(auth_router)
+api_router.include_router(users_router)
+api_router.include_router(uploads_router)
 api_router.include_router(vehicles_router)
 api_router.include_router(ownership_router)
 api_router.include_router(garages_router)
@@ -25,3 +29,4 @@ api_router.include_router(reports_router)
 api_router.include_router(disputes_router)
 api_router.include_router(support_router)
 api_router.include_router(admin_router)
+

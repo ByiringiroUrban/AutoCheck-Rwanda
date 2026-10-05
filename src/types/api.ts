@@ -13,6 +13,7 @@ export interface User {
   first_name: string;
   last_name: string;
   phone?: string | null;
+  avatar_url?: string | null;
   role: Role | string;
   status: string;
   created_at: string;
@@ -224,6 +225,7 @@ export interface Organization {
   location: string;
   email: string;
   phone: string;
+  logo_url?: string | null;
   status: string;
   created_at: string;
   members?: OrganizationMember[] | null;
@@ -276,3 +278,27 @@ export interface MessageResponse {
   message: string;
   success?: boolean;
 }
+
+export interface PasswordResetVerifyResponse {
+  valid: boolean;
+  email?: string | null;
+  first_name?: string | null;
+  message?: string | null;
+}
+
+export interface AvatarUploadResponse {
+  avatar_url: string;
+  public_id?: string;
+  message: string;
+}
+
+export interface CloudinaryUploadResponse {
+  url: string;
+  public_id: string;
+  format?: string;
+  bytes?: number;
+  width?: number;
+  height?: number;
+  resource_type?: string;
+}
+

@@ -25,21 +25,25 @@ async def upload_vehicle_image(
     current_user: UserResponse = Depends(get_current_user),
     db: Prisma = Depends(get_db)
 ):
-    """Upload vehicle image for evidence / AI damage processing."""
-    rel_url, abs_path = await save_uploaded_file(file, subfolder="vehicle_images")
+    """Upload vehicle image to Cloudinary for evidence / AI damage processing."""
+    if CloudinaryService.is_configured():
+        cloud_res = await CloudinaryService.upload_vehicle_photo(file=file, vehicle_id=id, view_type=view_type)
+        image_url = cloud_res["url"]
+    else:
+        image_url, _ = await save_uploaded_file(file, subfolder="vehicle_images")
 
     img_rec = await db.vehicleimage.create(
         data={
             "vehicle_id": id,
             "uploaded_by": current_user.id,
-            "image_url": rel_url,
+            "image_url": image_url,
             "view_type": view_type.upper(),
             "source_type": source_type.upper(),
         }
     )
 
     return PresignedUploadResponse(
-        upload_url=rel_url,
+        upload_url=image_url,
         file_id=img_rec.id,
         view_type=img_rec.view_type,
     )

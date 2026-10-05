@@ -67,9 +67,17 @@ export function DashboardFrame({
             aria-haspopup="menu"
             onClick={() => setMenu((value) => !value)}
           >
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-ac-magenta text-[12px] font-bold text-white">
-              {initials}
-            </span>
+            {user?.avatar_url ? (
+              <img
+                src={user.avatar_url}
+                alt=""
+                className="h-8 w-8 rounded-full object-cover border border-[#cbd5e1]"
+              />
+            ) : (
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-ac-magenta text-[12px] font-bold text-white">
+                {initials}
+              </span>
+            )}
             <span className="hidden text-left sm:block">
               <span className="block text-[13px] font-semibold leading-4 text-ac-ink">
                 {user ? user.first_name : "Account"}
@@ -79,11 +87,26 @@ export function DashboardFrame({
           </button>
           {menu ? (
             <div role="menu" className="absolute right-0 top-12 w-64 rounded-xl border border-solid border-[#e3ebeb] bg-white p-3 text-ac-ink shadow-lg">
-              <p className="m-0 text-[14px] font-bold">
-                {user?.first_name} {user?.last_name}
-              </p>
-              <p className="m-0 mt-1 text-[12px] text-[#667]">{user?.email}</p>
-              <p className="m-0 mt-2 inline-block rounded-full bg-[#e7f3f3] px-2 py-0.5 text-[11px] font-bold text-ac-navy">
+              <div className="flex items-center gap-3 mb-2">
+                {user?.avatar_url ? (
+                  <img
+                    src={user.avatar_url}
+                    alt=""
+                    className="h-10 w-10 rounded-full object-cover border border-[#cbd5e1]"
+                  />
+                ) : (
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-ac-magenta text-[14px] font-bold text-white">
+                    {initials}
+                  </span>
+                )}
+                <div className="overflow-hidden">
+                  <p className="m-0 text-[14px] font-bold truncate">
+                    {user?.first_name} {user?.last_name}
+                  </p>
+                  <p className="m-0 text-[12px] text-[#667] truncate">{user?.email}</p>
+                </div>
+              </div>
+              <p className="m-0 inline-block rounded-full bg-[#e7f3f3] px-2 py-0.5 text-[11px] font-bold text-ac-navy">
                 {user?.role}
               </p>
               {account ? (

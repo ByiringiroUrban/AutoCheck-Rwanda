@@ -42,9 +42,25 @@ class Settings(BaseSettings):
             return v
         return ["*"]
 
-    # File Uploads
+    # File Uploads & Cloudinary
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE_MB: int = 10
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
+    CLOUDINARY_FOLDER: str = "autocheck_rwanda"
+
+    # SMTP Email Service
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_TLS: bool = True
+    SMTP_USER: str = ""
+    SMTP_PASS: str = ""
+    SMTP_FROM: str = "Logan Investment Co. Ltd <urbanpac20@gmail.com>"
+
+    # Frontend Application
+    FRONTEND_URL: str = "http://localhost:3000"
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 60
 
     # AI Damage Analysis
     AI_MODEL_VERSION: str = "autocheck-vision-v1.0"
