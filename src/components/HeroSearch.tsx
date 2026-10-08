@@ -4,17 +4,6 @@ import { useState, useEffect, useCallback, type FormEvent } from "react";
 import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
 import { validatePlate, validateVin } from "@/utils/validation";
 
-// ── Slide data ────────────────────────────────────────────────────────────────
-const SLIDES = [
-  { src: "/images/slides/slide-1.jpg", alt: "Kigali Convention Centre lit in Rwanda flag colours at night" },
-  { src: "/images/slides/slide-2.jpg", alt: "Kigali downtown skyscrapers at night" },
-  { src: "/images/slides/slide-3.jpg", alt: "Kigali city lights and modern tower at night" },
-  { src: "/images/slides/slide-4.jpg", alt: "Aerial view of Kigali roundabout and green city centre" },
-  { src: "/images/slides/slide-5.jpg", alt: "Kigali green hills and modern skyline" },
-];
-
-const SLIDE_DURATION = 5000; // ms between auto-advances
-
 // ── Form styles ───────────────────────────────────────────────────────────────
 const inputBase =
   "block w-full h-[32px] px-[14px] py-[7px] text-[14px] leading-[14px] text-ac-ink bg-white border border-solid rounded-none placeholder:text-[rgba(33,37,41,0.75)] focus:outline-0 focus:border-[#86b7fe] focus:shadow-[0_0_0_0.25rem_rgba(13,110,253,0.25)] transition-[border-color,box-shadow] duration-150";
@@ -23,93 +12,25 @@ const errorText = "mt-[4px] text-[12px] text-ac-danger";
 const helpLink = "text-[14px] font-bold leading-[18.2px] text-ac-blue m-[7px] cursor-pointer";
 const col = "shrink-0 px-[10.5px]";
 
-// ── Hero Slider ───────────────────────────────────────────────────────────────
-function HeroSlider() {
-  const [current, setCurrent] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
-
-  const goTo = useCallback((idx: number) => {
-    setTransitioning(true);
-    setTimeout(() => {
-      setCurrent(idx);
-      setTransitioning(false);
-    }, 600);
-  }, []);
-
-  const next = useCallback(() => {
-    goTo((current + 1) % SLIDES.length);
-  }, [current, goTo]);
-
-  // Auto-advance
-  useEffect(() => {
-    const timer = setTimeout(next, SLIDE_DURATION);
-    return () => clearTimeout(timer);
-  }, [current, next]);
-
+// ── Hero Video ────────────────────────────────────────────────────────────────
+function HeroVideo() {
   return (
-    <>
-      {/* Slide layers — stack with absolute positioning */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 overflow-hidden"
-        style={{ zIndex: 0 }}
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 overflow-hidden"
+      style={{ zIndex: 0 }}
+    >
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
       >
-        {SLIDES.map((slide, i) => (
-          <div
-            key={slide.src}
-            className="absolute inset-0 bg-cover bg-center transition-opacity duration-[1200ms] ease-in-out"
-            style={{
-              backgroundImage: `url(${slide.src})`,
-              opacity: i === current ? (transitioning ? 0 : 1) : 0,
-            }}
-          />
-        ))}
-        {/* Dark overlay so the white search card stays readable */}
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
-
-      {/* Dot navigation */}
-      <div
-        className="absolute bottom-4 left-0 right-0 flex justify-center gap-[10px]"
-        style={{ zIndex: 2 }}
-      >
-        {SLIDES.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            aria-label={`Go to slide ${i + 1}`}
-            onClick={() => goTo(i)}
-            className={`h-[10px] rounded-full border-2 border-white transition-all duration-300 cursor-pointer ${
-              i === current ? "w-[28px] bg-white" : "w-[10px] bg-white/40 hover:bg-white/70"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Prev / Next arrows */}
-      <button
-        type="button"
-        aria-label="Previous slide"
-        onClick={() => goTo((current - 1 + SLIDES.length) % SLIDES.length)}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-[2] flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white hover:bg-black/60 transition-colors duration-200 cursor-pointer border-0"
-        style={{ zIndex: 2 }}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-      </button>
-      <button
-        type="button"
-        aria-label="Next slide"
-        onClick={() => goTo((current + 1) % SLIDES.length)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-[2] flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white hover:bg-black/60 transition-colors duration-200 cursor-pointer border-0"
-        style={{ zIndex: 2 }}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
-      </button>
-    </>
+        <source src="/videos/hero-bg.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 bg-black/40" />
+    </div>
   );
 }
 
@@ -164,9 +85,9 @@ export function HeroSearch() {
       className="relative overflow-hidden"
       style={{ minHeight: "520px" }}
     >
-      {/* ── Sliding background (desktop only) ── */}
+      {/* ── Video background (desktop only) ── */}
       <div className="hidden md:block absolute inset-0" style={{ zIndex: 0 }}>
-        <HeroSlider />
+        <HeroVideo />
       </div>
 
       {/* ── Static mobile hero image ── */}

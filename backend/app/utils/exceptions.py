@@ -58,3 +58,13 @@ class ConflictException(AppException):
             detail=detail,
             error_code="CONFLICT"
         )
+
+
+class InternalServerException(AppException):
+    def __init__(self, detail: str = "An internal server error occurred"):
+        super().__init__(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=detail,
+            error_code="INTERNAL_SERVER_ERROR"
+        )
+

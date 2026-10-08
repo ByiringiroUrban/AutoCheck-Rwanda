@@ -3,6 +3,8 @@ import type {
   AdminStats,
   AiInspection,
   AuditLog,
+  AvatarUploadResponse,
+  CloudinaryUploadResponse,
   Dispute,
   Inspection,
   InspectionItem,
@@ -12,6 +14,7 @@ import type {
   Organization,
   OrganizationMember,
   Ownership,
+  PasswordResetVerifyResponse,
   Report,
   ServiceRecord,
   TimelineItem,
@@ -47,13 +50,53 @@ export const endpoints = {
       skipAuthRedirect: true,
     }),
 
+  verifyOtp: (email: string, otp: string) =>
+    api<PasswordResetVerifyResponse>("/api/v1/auth/verify-otp", {
+      method: "POST",
+      json: { email, otp },
+      auth: false,
+      skipAuthRedirect: true,
+    }),
+
+  resetPassword: (body: { email: string; otp: string; new_password: string }) =>
+    api<MessageResponse>("/api/v1/auth/reset-password", {
+      method: "POST",
+      json: body,
+      auth: false,
+      skipAuthRedirect: true,
+    }),
+
   updateMe: (body: {
     first_name?: string;
     last_name?: string;
     phone?: string;
+    avatar_url?: string;
     old_password?: string;
     new_password?: string;
+    password?: string;
   }) => api<User>("/api/v1/users/me", { method: "PATCH", json: body }),
+
+  uploadAvatar: (file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    return api<AvatarUploadResponse>("/api/v1/users/me/avatar", { method: "POST", form });
+  },
+
+  deleteAvatar: () => api<MessageResponse>("/api/v1/users/me/avatar", { method: "DELETE" }),
+
+  uploadGeneralImage: (file: File, folder: string = "general") => {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("folder", folder);
+    return api<CloudinaryUploadResponse>("/api/v1/uploads/image", { method: "POST", form });
+  },
+
+  uploadEvidenceFile: (file: File, category: string = "ownership") => {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("category", category);
+    return api<CloudinaryUploadResponse>("/api/v1/uploads/evidence", { method: "POST", form });
+  },
 
   searchVehicle: (query: { vin?: string; plate?: string }) => {
     const params = new URLSearchParams();

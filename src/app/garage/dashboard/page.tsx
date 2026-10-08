@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ClipboardCheck, FilePlus, Files, Settings, Users, Warehouse, Wrench } from "lucide-react";
+import { ClipboardCheck, FilePlus, Files, Search, Settings, Users, Warehouse, Wrench } from "lucide-react";
 import { ActionCard } from "@/components/dashboard/kit";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { VehicleSearchForm } from "@/components/VehicleSearchForm";
@@ -113,6 +113,9 @@ function GarageHome() {
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {[
+              { href: "/garage/vehicles", title: "Find / register vehicle", text: "Look up or register a vehicle in the registry.", icon: <Search size={18} /> },
+              { href: "/garage/records/new", title: "Add service record", text: "Record maintenance against a vehicle.", icon: <ClipboardCheck size={18} /> },
+              { href: "/garage/inspections/new", title: "Add inspection", text: "Complete a checklist inspection.", icon: <ClipboardCheck size={18} /> },
               { href: "/garage/staff", title: "Staff management", text: "Invite mechanics and turn accounts on or off.", icon: <Users size={18} /> },
               { href: "/dealer/inventory", title: "Dealer inventory", text: "Look up cars in the registry by VIN or plate.", icon: <Warehouse size={18} /> },
               { href: "/dealer/reports", title: "Bulk reports", text: "Open reports you have already generated.", icon: <Files size={18} /> },

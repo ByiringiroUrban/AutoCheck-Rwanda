@@ -279,7 +279,12 @@ export function DashboardFrame({
             aria-expanded={menu}
             onClick={() => setMenu((value) => !value)}
           >
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-ac-magenta text-[12px] font-bold text-white">{initials}</span>
+            {user?.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={user.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover" />
+            ) : (
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-ac-magenta text-[12px] font-bold text-white">{initials}</span>
+            )}
             <span className="hidden text-left sm:block">
               <span className="block text-[13px] font-semibold leading-4">{user?.first_name || "Account"}</span>
               <span className="block text-[11px] leading-4 text-[#7a8686]">{roleLabel}</span>
@@ -287,11 +292,21 @@ export function DashboardFrame({
             <ChevronDown size={16} className={`text-[#667] transition ${menu ? "rotate-180" : ""}`} />
           </button>
           {menu ? (
-            <div role="menu" className="absolute right-0 top-12 w-64 rounded-xl border border-solid border-[#e3ebeb] bg-white p-3 shadow-lg">
-              <p className="m-0 text-[14px] font-bold">
-                {user?.first_name} {user?.last_name}
-              </p>
-              <p className="m-0 mt-1 break-all text-[12px] text-[#667]">{user?.email}</p>
+            <div role="menu" className="absolute right-0 top-12 z-50 w-64 rounded-xl border border-solid border-[#e3ebeb] bg-white p-3 shadow-lg">
+              <div className="flex items-center gap-3">
+                {user?.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={user.avatar_url} alt="" className="h-10 w-10 rounded-full object-cover" />
+                ) : (
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-ac-magenta text-[14px] font-bold text-white">{initials}</span>
+                )}
+                <div className="min-w-0">
+                  <p className="m-0 truncate text-[14px] font-medium">
+                    {user?.first_name} {user?.last_name}
+                  </p>
+                  <p className="m-0 truncate text-[12px] text-[#667]">{user?.email}</p>
+                </div>
+              </div>
               <p className="m-0 mt-2 inline-block rounded-md bg-ac-navy px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white">{roleLabel}</p>
               {account ? (
                 <Link href={account.href} className="mt-3 flex items-center gap-2 rounded-lg px-2 py-2 text-[14px] font-medium text-ac-navy no-underline hover:bg-[#f4f8f8]" onClick={() => setMenu(false)}>

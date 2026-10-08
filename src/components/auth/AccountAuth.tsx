@@ -9,12 +9,23 @@ import { homeForRole } from "@/utils/roles";
 
 const input = fieldClass;
 
+const EyeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+);
+
+const EyeOffIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+);
+
 export function AccountAuth() {
   const { login, register } = useAuth();
   const router = useRouter();
   const [signError, setSignError] = useState<string | null>(null);
   const [regError, setRegError] = useState<string | null>(null);
   const [pending, setPending] = useState<"in" | "up" | null>(null);
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirm, setShowRegConfirm] = useState(false);
 
   const onSignIn = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -85,7 +96,12 @@ export function AccountAuth() {
                   <label className="mb-[5px] block text-[12px] font-semibold uppercase tracking-wide text-[#555]" htmlFor="signin-password">
                     Password
                   </label>
-                  <input id="signin-password" name="password" type="password" required autoComplete="current-password" className={`${input} mb-4`} />
+                  <div className="relative mb-4">
+                    <input id="signin-password" name="password" type={showSignInPassword ? "text" : "password"} required autoComplete="current-password" className={`${input} w-full pr-10`} />
+                    <button type="button" onClick={() => setShowSignInPassword(!showSignInPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333]" aria-label="Toggle password visibility">
+                      {showSignInPassword ? <EyeOffIcon /> : <EyeIcon />}
+                    </button>
+                  </div>
                   {signError ? (
                     <div className="mb-3">
                       <Alert>{signError}</Alert>
@@ -136,11 +152,21 @@ export function AccountAuth() {
                   <label className="mb-[5px] block text-[12px] font-semibold uppercase text-[#555]" htmlFor="reg-password">
                     Password
                   </label>
-                  <input id="reg-password" name="password" type="password" required minLength={8} className={`${input} mb-4`} />
+                  <div className="relative mb-4">
+                    <input id="reg-password" name="password" type={showRegPassword ? "text" : "password"} required minLength={8} className={`${input} w-full pr-10`} />
+                    <button type="button" onClick={() => setShowRegPassword(!showRegPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333]" aria-label="Toggle password visibility">
+                      {showRegPassword ? <EyeOffIcon /> : <EyeIcon />}
+                    </button>
+                  </div>
                   <label className="mb-[5px] block text-[12px] font-semibold uppercase text-[#555]" htmlFor="reg-confirm">
                     Confirm Password
                   </label>
-                  <input id="reg-confirm" name="confirmPassword" type="password" required className={`${input} mb-4`} />
+                  <div className="relative mb-4">
+                    <input id="reg-confirm" name="confirmPassword" type={showRegConfirm ? "text" : "password"} required className={`${input} w-full pr-10`} />
+                    <button type="button" onClick={() => setShowRegConfirm(!showRegConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#333]" aria-label="Toggle password visibility">
+                      {showRegConfirm ? <EyeOffIcon /> : <EyeIcon />}
+                    </button>
+                  </div>
                   <ul className="mb-4 list-none p-0 text-[11px] text-[#666]">
                     <li>• At least 8 characters</li>
                     <li>• A mix of CAPITAL and lower case letters is recommended</li>

@@ -83,6 +83,44 @@ def decode_token(token: str) -> Dict[str, Any]:
         raise UnauthorizedException(f"Invalid or expired token: {str(e)}")
 
 
+def create_password_reset_token(
+    user_id: str,
+    email: str,
+    password_hash: str,
+    expires_delta: Optional[timedelta] = None
+) -> str:
+    """Creates a signed JWT password reset token with fingerprinting."""
+    now = datetime.now(timezone.utc)
+    if expires_delta:
+        expire = now + expires_delta
+    else:
+        expire = now + timedelta(minutes=settings.PASSWORD_RESET_TOKEN_EXPIRE_MINUTES)
+    
+    # Hash fingerprint prevents token replay after password was already updated
+    fingerprint = password_hash[-12:] if len(password_hash) >= 12 else password_hash
+    
+    to_encode: Dict[str, Any] = {
+        "sub": str(user_id),
+        "email": email.lower(),
+        "type": "password_reset",
+        "fp": fingerprint,
+        "iat": int(now.timestamp()),
+        "exp": int(expire.timestamp()),
+    }
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def decode_password_reset_token(token: str) -> Dict[str, Any]:
+    """Decodes and validates a password reset token."""
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        if payload.get("type") != "password_reset":
+            raise UnauthorizedException("Invalid token purpose; expected password reset token")
+        return payload
+    except JWTError as e:
+        raise UnauthorizedException(f"Invalid or expired password reset token: {str(e)}")
+
+
 ROLE_HIERARCHY: Dict[str, int] = {
     "PUBLIC": 0,
     "OWNER": 10,

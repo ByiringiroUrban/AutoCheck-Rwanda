@@ -1,14 +1,14 @@
 import os
 import uuid
-import aiofiles
 from pathlib import Path
 from fastapi import UploadFile
 from typing import Set, Tuple
 from app.core.config import settings
 from app.utils.exceptions import BadRequestException
+from app.services.cloudinary_service import CloudinaryService
 
 
-ALLOWED_IMAGE_EXTENSIONS: Set[str] = {".jpg", ".jpeg", ".png", ".webp"}
+ALLOWED_IMAGE_EXTENSIONS: Set[str] = {".jpg", ".jpeg", ".png", ".webp", ".avif"}
 ALLOWED_DOCUMENT_EXTENSIONS: Set[str] = {".pdf", ".jpg", ".jpeg", ".png"}
 
 
@@ -20,14 +20,25 @@ def ensure_upload_dir() -> Path:
 
 async def save_uploaded_file(file: UploadFile, subfolder: str = "images") -> Tuple[str, str]:
     """
-    Saves an uploaded file to the local storage subfolder.
-    Returns (relative_file_url, absolute_file_path).
+    Saves an uploaded file to Cloudinary if configured, otherwise to local storage.
+    Returns (url, storage_path_or_public_id).
     """
     ext = Path(file.filename or "").suffix.lower()
     if ext not in ALLOWED_IMAGE_EXTENSIONS and ext not in ALLOWED_DOCUMENT_EXTENSIONS:
-        raise BadRequestException(f"Unsupported file extension '{ext}'. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS | ALLOWED_DOCUMENT_EXTENSIONS)}")
+        raise BadRequestException(
+            f"Unsupported file extension '{ext}'. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS | ALLOWED_DOCUMENT_EXTENSIONS)}"
+        )
 
-    # Check file size if available
+    # If Cloudinary is configured, upload directly to Cloudinary
+    if CloudinaryService.is_configured():
+        try:
+            cloud_res = await CloudinaryService.upload_file(file=file, folder=subfolder)
+            return cloud_res["url"], cloud_res["public_id"]
+        except Exception as e:
+            # Fall back to local storage if Cloudinary fails unexpectedly
+            pass
+
+    # Local storage fallback
     target_dir = ensure_upload_dir() / subfolder
     target_dir.mkdir(parents=True, exist_ok=True)
 
@@ -48,3 +59,4 @@ async def save_uploaded_file(file: UploadFile, subfolder: str = "images") -> Tup
 
     relative_url = f"/uploads/{subfolder}/{unique_filename}"
     return relative_url, str(dest_path)
+
