@@ -43,6 +43,24 @@ class OrganizationMemberResponse(BaseModel):
         from_attributes = True
 
 
+class OrganizationSelfUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=2)
+    phone: Optional[str] = Field(None, min_length=6)
+    email: Optional[EmailStr] = None
+    address: Optional[str] = None
+    location: Optional[str] = None
+
+
+class InventoryVehicle(BaseModel):
+    id: str
+    vin: str
+    make: str
+    model: str
+    year: int
+    current_plate: Optional[str] = None
+    latest_mileage: Optional[int] = None
+
+
 class OrganizationResponse(BaseModel):
     id: str
     name: str

@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DataTable } from "@/components/DataTable";
 import { DashboardFrame } from "@/components/DashboardFrame";
+import { PendingForm, SubmitButton } from "@/components/dashboard/actions";
 import { Alert, Spinner, fieldClass } from "@/components/ui";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
@@ -86,18 +87,16 @@ function StaffBody() {
             { key: "email", header: "Email", render: (row) => row.user?.email || "—" },
             { key: "role", header: "Role", render: (row) => row.role },
             { key: "status", header: "Status", render: (row) => row.status },
+          ]}
+          rowActions={(row) => [
             {
-              key: "action",
-              header: "",
-              render: (row) => (
-                <button type="button" className="text-[13px] font-semibold text-ac-blue" onClick={() => void toggle(row)}>
-                  {row.status === "ACTIVE" ? "Deactivate" : "Activate"}
-                </button>
-              ),
+              label: row.status === "ACTIVE" ? "Deactivate" : "Activate",
+              danger: row.status === "ACTIVE",
+              onClick: () => toggle(row),
             },
           ]}
         />
-        <form method="post" onSubmit={invite} className="grid max-w-xl grid-cols-1 gap-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4 sm:grid-cols-2">
+        <PendingForm onSubmit={invite} className="grid max-w-xl grid-cols-1 gap-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4 sm:grid-cols-2">
           <h2 className="m-0 sm:col-span-2 text-[16px] font-bold">Invite staff</h2>
           <input name="name" required placeholder="Full name" className={fieldClass} />
           <input name="email" type="email" required placeholder="Email" className={fieldClass} />
@@ -106,10 +105,10 @@ function StaffBody() {
             <option value="STAFF">Staff</option>
             <option value="MANAGER">Manager</option>
           </select>
-          <button type="submit" className="ac-btn px-5 sm:col-span-2">
+          <SubmitButton busyLabel="Sending…" className="ac-btn px-5 sm:col-span-2">
             Send invite
-          </button>
-        </form>
+          </SubmitButton>
+        </PendingForm>
       </div>
     </DashboardFrame>
   );

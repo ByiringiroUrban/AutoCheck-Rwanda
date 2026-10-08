@@ -62,6 +62,46 @@ async def seed():
         },
     )
 
+    garage_worker = await db.user.upsert(
+        where={"email": "worker@kigaligarage.rw"},
+        data={
+            "create": {
+                "email": "worker@kigaligarage.rw",
+                "password_hash": get_password_hash("Worker@2026!"),
+                "first_name": "Jean",
+                "last_name": "Habimana",
+                "phone": "+250788333555",
+                "role": "GARAGE_STAFF",
+                "status": "ACTIVE",
+            },
+            "update": {
+                "role": "GARAGE_STAFF",
+                "status": "ACTIVE",
+                "password_hash": get_password_hash("Worker@2026!"),
+            },
+        },
+    )
+
+    ingoga_admin = await db.user.upsert(
+        where={"email": "admin@ingoga.rw"},
+        data={
+            "create": {
+                "email": "admin@ingoga.rw",
+                "password_hash": get_password_hash("Admin@2026!"),
+                "first_name": "Aline",
+                "last_name": "Uwase",
+                "phone": "+250788111333",
+                "role": "ADMIN",
+                "status": "ACTIVE",
+            },
+            "update": {
+                "role": "ADMIN",
+                "status": "ACTIVE",
+                "password_hash": get_password_hash("Admin@2026!"),
+            },
+        },
+    )
+
     # Vehicle Owner
     owner_user = await db.user.upsert(
         where={"email": "owner@autocheck.rw"},
@@ -93,6 +133,19 @@ async def seed():
                 "status": "APPROVED",
             },
             "update": {"status": "APPROVED"},
+        },
+    )
+
+    await db.organizationmember.upsert(
+        where={"organization_id_user_id": {"organization_id": garage.id, "user_id": garage_worker.id}},
+        data={
+            "create": {
+                "organization_id": garage.id,
+                "user_id": garage_worker.id,
+                "role": "STAFF",
+                "status": "ACTIVE",
+            },
+            "update": {"role": "STAFF", "status": "ACTIVE"},
         },
     )
 

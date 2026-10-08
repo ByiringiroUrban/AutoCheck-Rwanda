@@ -1,7 +1,8 @@
 import json
-import random
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional, List, Dict, Any
+from PIL import Image, ImageFilter, ImageStat
 from prisma import Prisma
 from app.core.config import settings
 from app.schemas.ai import (
@@ -12,15 +13,65 @@ from app.schemas.ai import (
 from app.utils.exceptions import NotFoundException, BadRequestException
 
 
-DEFECT_CATALOG = [
-    {"defect_type": "SCRATCH", "locations": ["FRONT_BUMPER", "REAR_DOOR_RIGHT", "HOOD", "DRIVER_DOOR"], "severity": "MINOR", "conf_range": (0.75, 0.94)},
-    {"defect_type": "DENT", "locations": ["REAR_BUMPER", "PASSENGER_DOOR", "TRUNK_LID", "FENDER_LEFT"], "severity": "MODERATE", "conf_range": (0.78, 0.96)},
-    {"defect_type": "RUST", "locations": ["UNDERCARRIAGE", "WHEEL_ARCH_LEFT", "EXHAUST_AREA", "ROCKER_PANEL"], "severity": "MODERATE", "conf_range": (0.70, 0.91)},
-    {"defect_type": "CRACKED_LIGHT", "locations": ["FRONT_HEADLIGHT_LEFT", "TAIL_LIGHT_RIGHT", "FOG_LIGHT"], "severity": "MODERATE", "conf_range": (0.85, 0.98)},
-    {"defect_type": "BROKEN_LIGHT", "locations": ["FRONT_HEADLIGHT_RIGHT", "TAIL_LIGHT_LEFT"], "severity": "SEVERE", "conf_range": (0.88, 0.99)},
-    {"defect_type": "PANEL_DAMAGE", "locations": ["FRONT_BUMPER", "HOOD", "QUARTER_PANEL_RIGHT"], "severity": "SEVERE", "conf_range": (0.80, 0.95)},
-    {"defect_type": "PAINT_CHIP", "locations": ["HOOD", "FRONT_GRILLE", "SIDE_MIRROR_LEFT"], "severity": "MINOR", "conf_range": (0.65, 0.88)},
-]
+SURFACE_MODEL = "autocheck-surface-v1.1"
+VIEW_LOCATION = {
+    "FRONT": "FRONT_BUMPER",
+    "REAR": "REAR_DOOR",
+    "LEFT_SIDE": "DRIVER_DOOR",
+    "RIGHT_SIDE": "PASSENGER_DOOR",
+    "DAMAGE_DETAIL": "SIDE_PANEL",
+    "ROOF": "ROOF",
+    "INTERIOR": "INTERIOR",
+    "ENGINE_BAY": "ENGINE_BAY",
+}
+
+
+def image_file_path(image_url: str) -> Path:
+    relative = image_url.lstrip("/")
+    if relative.startswith("uploads/"):
+        relative = relative[len("uploads/") :]
+    return Path(settings.UPLOAD_DIR) / relative
+
+
+def analyze_surface(path: Path, view_type: str) -> List[Dict[str, Any]]:
+    """Find high-contrast patches on a real photo and return bounding boxes."""
+    image = Image.open(path).convert("RGB")
+    small = image.resize((48, 48))
+    edges = small.convert("L").filter(ImageFilter.FIND_EDGES)
+    cells = []
+    for grid_y in range(4):
+        for grid_x in range(4):
+            box = (grid_x * 12, grid_y * 12, (grid_x + 1) * 12, (grid_y + 1) * 12)
+            edge_mean = ImageStat.Stat(edges.crop(box)).mean[0]
+            color = ImageStat.Stat(small.crop(box)).mean
+            cells.append((edge_mean, grid_x, grid_y, color))
+    average = sum(item[0] for item in cells) / len(cells)
+    hot = [item for item in cells if item[0] > max(18, average * 1.35)]
+    hot.sort(key=lambda item: item[0], reverse=True)
+    findings = []
+    for edge_mean, grid_x, grid_y, color in hot[:2]:
+        red, green, blue = color
+        if red > green + 25 and red > blue + 15:
+            defect_type, severity = "RUST", "MODERATE"
+        elif edge_mean > average * 1.8:
+            defect_type, severity = "DENT", "MODERATE"
+        else:
+            defect_type, severity = "SCRATCH", "MINOR"
+        findings.append(
+            {
+                "defect_type": defect_type,
+                "location": VIEW_LOCATION.get(view_type, "BODY_PANEL"),
+                "severity": severity,
+                "confidence": round(min(0.97, 0.55 + (edge_mean - average) / 255), 2),
+                "bbox": [
+                    round(grid_y / 4, 2),
+                    round(grid_x / 4, 2),
+                    round(grid_y / 4 + 0.25, 2),
+                    round(grid_x / 4 + 0.25, 2),
+                ],
+            }
+        )
+    return findings
 
 
 class AIService:
@@ -43,54 +94,55 @@ class AIService:
             data={
                 "vehicle_id": inspection_in.vehicle_id,
                 "inspection_id": inspection_in.inspection_id,
-                "model_version": settings.AI_MODEL_VERSION,
+                "model_version": SURFACE_MODEL,
                 "status": "PROCESSING",
                 "started_at": started_at,
             }
         )
 
         try:
-            # 2. Run deterministic damage detection inference
-            # Seed based on vehicle ID + time to provide realistic, reproducible detection
-            random.seed(f"{vehicle.vin}_{ai_job.id}")
-            num_defects = random.choices([0, 1, 2, 3], weights=[0.25, 0.40, 0.25, 0.10])[0]
+            images = []
+            if inspection_in.image_urls:
+                images = await self.db.vehicleimage.find_many(
+                    where={"vehicle_id": vehicle.id, "image_url": {"in": inspection_in.image_urls}}
+                )
+            if not images:
+                images = await self.db.vehicleimage.find_many(
+                    where={"vehicle_id": vehicle.id},
+                    order={"created_at": "desc"},
+                    take=6,
+                )
 
             findings: List[AIFindingResponse] = []
-            selected_defects = random.sample(DEFECT_CATALOG, min(num_defects, len(DEFECT_CATALOG)))
-
-            for d in selected_defects:
-                loc = random.choice(d["locations"])
-                conf = round(random.uniform(*d["conf_range"]), 2)
-                
-                # Mock normalized bounding box [ymin, xmin, ymax, xmax]
-                ymin = round(random.uniform(0.1, 0.5), 2)
-                xmin = round(random.uniform(0.1, 0.5), 2)
-                ymax = round(ymin + random.uniform(0.15, 0.35), 2)
-                xmax = round(xmin + random.uniform(0.15, 0.35), 2)
-                bbox = [ymin, xmin, ymax, xmax]
-
-                finding_rec = await self.db.aifinding.create(
-                    data={
-                        "ai_inspection_id": ai_job.id,
-                        "defect_type": d["defect_type"],
-                        "location": loc,
-                        "severity": d["severity"],  # type: ignore
-                        "confidence": conf,
-                        "bbox_json": json.dumps(bbox),
-                    }
-                )
-
-                findings.append(
-                    AIFindingResponse(
-                        id=finding_rec.id,
-                        ai_inspection_id=finding_rec.ai_inspection_id,
-                        defect_type=finding_rec.defect_type,
-                        location=finding_rec.location,
-                        severity=finding_rec.severity,
-                        confidence=finding_rec.confidence,
-                        bbox=bbox,
+            for image in images:
+                path = image_file_path(image.image_url)
+                if not path.is_file():
+                    continue
+                for detected in analyze_surface(path, image.view_type or "FRONT"):
+                    finding_rec = await self.db.aifinding.create(
+                        data={
+                            "ai_inspection_id": ai_job.id,
+                            "image_id": image.id,
+                            "defect_type": detected["defect_type"],
+                            "location": detected["location"],
+                            "severity": detected["severity"],
+                            "confidence": detected["confidence"],
+                            "bbox_json": json.dumps(detected["bbox"]),
+                        }
                     )
-                )
+                    findings.append(
+                        AIFindingResponse(
+                            id=finding_rec.id,
+                            ai_inspection_id=finding_rec.ai_inspection_id,
+                            image_id=image.id,
+                            defect_type=finding_rec.defect_type,
+                            location=finding_rec.location,
+                            severity=finding_rec.severity,
+                            confidence=finding_rec.confidence,
+                            bbox=detected["bbox"],
+                            image_url=image.image_url,
+                        )
+                    )
 
             # 3. Mark completed
             completed_at = datetime.now(timezone.utc)
@@ -128,7 +180,7 @@ class AIService:
     async def get_ai_inspection_by_id(self, ai_id: str) -> AIInspectionResponse:
         job = await self.db.aiinspection.find_unique(
             where={"id": ai_id},
-            include={"findings": True},
+            include={"findings": {"include": {"image": True}}},
         )
         if not job:
             raise NotFoundException("AI Inspection", ai_id)
@@ -146,6 +198,7 @@ class AIService:
                     severity=f.severity,
                     confidence=f.confidence,
                     bbox=bbox,
+                    image_url=f.image.image_url if getattr(f, "image", None) else None,
                 )
             )
 
@@ -166,7 +219,7 @@ class AIService:
     async def list_vehicle_ai_inspections(self, vehicle_id: str) -> List[AIInspectionResponse]:
         jobs = await self.db.aiinspection.find_many(
             where={"vehicle_id": vehicle_id},
-            include={"findings": True},
+            include={"findings": {"include": {"image": True}}},
             order={"created_at": "desc"},
         )
         results = []
@@ -182,10 +235,11 @@ class AIService:
                         defect_type=f.defect_type,
                         location=f.location,
                         severity=f.severity,
-                        confidence=f.confidence,
-                        bbox=bbox,
-                    )
+                    confidence=f.confidence,
+                    bbox=bbox,
+                    image_url=f.image.image_url if getattr(f, "image", None) else None,
                 )
+            )
             results.append(
                 AIInspectionResponse(
                     id=job.id,

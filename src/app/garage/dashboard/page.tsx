@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ClipboardCheck, FilePlus, Files, Settings, Users, Warehouse, Wrench } from "lucide-react";
+import { ActionCard } from "@/components/dashboard/kit";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { VehicleSearchForm } from "@/components/VehicleSearchForm";
 import { BarChart, DashboardSkeleton, StatGrid } from "@/components/dashboard/OverviewCharts";
@@ -98,10 +100,12 @@ function GarageHome() {
           <>
             <VehicleSearchForm />
             <div className="flex flex-wrap gap-3">
-              <Link href="/garage/records/new" className="ac-btn px-5 no-underline">
+              <Link href="/garage/records/new" className="ac-btn gap-2 px-5 no-underline active:scale-[0.98]">
+                <Wrench size={16} />
                 Add service record
               </Link>
-              <Link href="/garage/inspections/new" className="ac-btn px-5 no-underline">
+              <Link href="/garage/inspections/new" className="ac-btn gap-2 px-5 no-underline active:scale-[0.98]">
+                <ClipboardCheck size={16} />
                 New inspection
               </Link>
             </div>
@@ -109,16 +113,13 @@ function GarageHome() {
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {[
-              ["/garage/staff", "Staff management", "Invite mechanics and turn accounts on or off."],
-              ["/dealer/inventory", "Dealer inventory", "Look up cars in the registry by VIN or plate."],
-              ["/dealer/reports", "Bulk reports", "Open reports you have already generated."],
-              ["/dealer/application", "Membership application", "Submit a garage or dealer onboarding request."],
-              ["/garage/settings", "Garage profile", "Business name, TIN, and approval status."],
-            ].map(([href, label, text]) => (
-              <Link key={href} href={href} className="rounded-[8px] border border-solid border-[#ddd] bg-white p-4 no-underline shadow-sm">
-                <p className="m-0 font-bold text-ac-navy">{label}</p>
-                <p className="mb-0 mt-1 text-[13px] text-[#555]">{text}</p>
-              </Link>
+              { href: "/garage/staff", title: "Staff management", text: "Invite mechanics and turn accounts on or off.", icon: <Users size={18} /> },
+              { href: "/dealer/inventory", title: "Dealer inventory", text: "Look up cars in the registry by VIN or plate.", icon: <Warehouse size={18} /> },
+              { href: "/dealer/reports", title: "Bulk reports", text: "Open reports you have already generated.", icon: <Files size={18} /> },
+              { href: "/dealer/application", title: "Membership application", text: "Submit a garage or dealer onboarding request.", icon: <FilePlus size={18} /> },
+              { href: "/garage/settings", title: "Garage profile", text: "Business name, TIN, and approval status.", icon: <Settings size={18} /> },
+            ].map((item) => (
+              <ActionCard key={item.href} {...item} />
             ))}
           </div>
         )}

@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DashboardFrame } from "@/components/DashboardFrame";
+import { PendingForm, SubmitButton } from "@/components/dashboard/actions";
 import { Alert, fieldClass } from "@/components/ui";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
@@ -43,7 +44,7 @@ function ApplicationBody() {
     <DashboardFrame title="Membership application" subtitle="Submit a garage or dealer business for INGOGA AUTO review.">
       {done ? <Alert tone="ok">Application submitted. An administrator reviews TIN, location, and contact details.</Alert> : null}
       {error ? <Alert>{error}</Alert> : null}
-      <form method="post" onSubmit={onSubmit} className="max-w-xl space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-5">
+      <PendingForm onSubmit={onSubmit} className="max-w-xl space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-5">
         <input name="name" required placeholder="Business name" className={fieldClass} />
         <select name="type" className={fieldClass} defaultValue="DEALER">
           <option value="DEALER">Dealer</option>
@@ -53,8 +54,8 @@ function ApplicationBody() {
         <input name="location" required placeholder="Location" className={fieldClass} />
         <input name="email" required type="email" placeholder="Business email" className={fieldClass} />
         <input name="phone" required placeholder="Phone" className={fieldClass} />
-        <button type="submit" className="ac-btn px-5">Submit application</button>
-      </form>
+        <SubmitButton busyLabel="Submitting…">Submit application</SubmitButton>
+      </PendingForm>
     </DashboardFrame>
   );
 }

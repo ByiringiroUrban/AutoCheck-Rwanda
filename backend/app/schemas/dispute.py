@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, Dict, Any
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 
 class DisputeCreate(BaseModel):
@@ -14,7 +14,14 @@ class DisputeCreate(BaseModel):
 
 class DisputeResolve(BaseModel):
     status: str = Field(..., description="RESOLVED, REJECTED, UNDER_REVIEW")
-    resolution_notes: str = Field(..., min_length=3)
+    resolution_notes: str = Field(
+        ...,
+        min_length=3,
+        validation_alias=AliasChoices("resolution_notes", "resolution_note"),
+    )
+    target_type: Optional[str] = None
+    target_id: Optional[str] = None
+    corrected_payload: Optional[Dict[str, Any]] = None
 
 
 class DisputeResponse(BaseModel):

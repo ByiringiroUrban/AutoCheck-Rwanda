@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
 
@@ -37,6 +37,20 @@ class PasswordResetConfirm(BaseModel):
     new_password: str = Field(..., min_length=6)
 
 
+class UserSelfUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone: Optional[str] = None
+    old_password: Optional[str] = None
+    new_password: Optional[str] = Field(None, min_length=6)
+    password: Optional[str] = Field(None, min_length=6)
+
+
+class AdminUserUpdate(BaseModel):
+    role: Optional[str] = None
+    status: Optional[str] = None
+
+
 class UserResponse(BaseModel):
     id: str
     email: str
@@ -50,3 +64,10 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserPage(BaseModel):
+    items: List[UserResponse]
+    total: int
+    page: int
+    pages: int

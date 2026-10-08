@@ -33,7 +33,7 @@ class ReportService:
                 "ownerships": True,
                 "service_records": {"include": {"organization": True, "creator": True}},
                 "inspections": {"include": {"organization": True, "items": True}},
-                "ai_inspections": {"include": {"findings": True}},
+                "ai_inspections": {"include": {"findings": {"include": {"image": True}}}},
                 "incident_records": True,
                 "disputes": True,
             },
@@ -140,6 +140,7 @@ class ReportService:
                     severity=f.severity,
                     confidence=f.confidence,
                     bbox=bbox_coords,
+                    image_url=f.image.image_url if getattr(f, "image", None) else None,
                 )
             )
 
@@ -174,7 +175,7 @@ class ReportService:
             ai_visible_defects=ai_defect_responses,
             timeline=timeline,
             dispute_count=len(vehicle.disputes or []),
-            disclaimer="AutoCheck Rwanda history reports are compiled from participating licensed garages, inspection centers, owner claims, and AI vision assessments. Score is calculated deterministically based on recorded data.",
+            disclaimer="AI visual assistance only. This is not a mechanical certification. The photo check looks for visible marks on the outside of the car. It does not inspect the engine, transmission, or mechanical health.",
         )
 
         # 7. Persist immutable Report record

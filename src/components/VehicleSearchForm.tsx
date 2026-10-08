@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { PendingForm, SubmitButton } from "@/components/dashboard/actions";
 import { fieldClass, Spinner } from "@/components/ui";
 import { useVehicleSearch } from "@/hooks/useVehicleSearch";
 import { validatePlate, validateVin } from "@/utils/validation";
@@ -24,7 +25,7 @@ export function VehicleSearchForm({ compact = false }: { compact?: boolean }) {
   };
 
   return (
-    <form method="post" onSubmit={onSubmit} className={compact ? "" : "rounded-[8px] border border-solid border-[#ddd] bg-white p-4 shadow-sm"}>
+    <PendingForm onSubmit={onSubmit} className={compact ? "" : "rounded-[8px] border border-solid border-[#ddd] bg-white p-4 shadow-sm"}>
       <div className="mb-3 flex gap-4 text-[14px]">
         <label className="flex items-center gap-2">
           <input type="radio" name="search-mode" checked={mode === "vin"} onChange={() => setMode("vin")} />
@@ -47,9 +48,7 @@ export function VehicleSearchForm({ compact = false }: { compact?: boolean }) {
           aria-label={mode === "vin" ? "Vehicle identification number" : "Rwanda plate number"}
           className={`${fieldClass} sm:flex-1`}
         />
-        <button type="submit" className="ac-btn px-5" disabled={loading}>
-          {loading ? "Searching…" : "Search"}
-        </button>
+        <SubmitButton busyLabel="Searching…">Search</SubmitButton>
       </div>
       {loading ? (
         <div className="mt-3">
@@ -57,6 +56,6 @@ export function VehicleSearchForm({ compact = false }: { compact?: boolean }) {
         </div>
       ) : null}
       {localError || error ? <p className="mt-2 mb-0 text-[12px] text-ac-danger">{localError || error}</p> : null}
-    </form>
+    </PendingForm>
   );
 }

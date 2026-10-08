@@ -43,6 +43,7 @@ const STAFF_GROUPS: PortalGroup[] = [
 const MANAGER_GROUPS: PortalGroup[] = [
   { label: "Overview", links: [{ href: "/garage/dashboard", label: "Manager Overview" }] },
   { label: "People", links: [{ href: "/garage/staff", label: "Staff Management" }] },
+  { label: "Workshop", links: [{ href: "/garage/records/new", label: "Add Service Record" }] },
   {
     label: "Dealership",
     links: [
@@ -79,6 +80,7 @@ const SUPER_GROUPS: PortalGroup[] = [
     label: "Access",
     links: [
       { href: "/admin/users", label: "Users & Role Assignment" },
+      { href: "/admin/disputes", label: "Dispute Queue" },
       { href: "/admin/security", label: "Security & API Keys" },
     ],
   },

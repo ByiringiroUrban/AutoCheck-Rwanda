@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DashboardFrame } from "@/components/DashboardFrame";
+import { PendingForm, SubmitButton } from "@/components/dashboard/actions";
 import { Alert, fieldClass } from "@/components/ui";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
@@ -88,14 +89,12 @@ function InspectionForm() {
         {error ? <Alert>{error}</Alert> : null}
         {warning ? <Alert tone="warn">{warning}</Alert> : null}
         {note ? <Alert tone="ok">{note}</Alert> : null}
-        <form method="post" onSubmit={find} className="flex flex-col gap-3 sm:flex-row">
+        <PendingForm onSubmit={find} className="flex flex-col gap-3 sm:flex-row">
           <input name="vin" required maxLength={17} placeholder="VIN" className={fieldClass} />
-          <button className="ac-btn px-5" type="submit">
-            Look up
-          </button>
-        </form>
+          <SubmitButton busyLabel="Looking up…">Look up</SubmitButton>
+        </PendingForm>
         {vehicle ? (
-          <form method="post" onSubmit={save} className="space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4">
+          <PendingForm onSubmit={save} className="space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4">
             <p className="m-0 font-bold">
               {vehicle.year} {vehicle.make} {vehicle.model}
             </p>
@@ -116,10 +115,8 @@ function InspectionForm() {
                 <input name={`notes-${item.item}`} placeholder="Notes" className={fieldClass} />
               </div>
             ))}
-            <button type="submit" className="ac-btn px-5">
-              Complete inspection
-            </button>
-          </form>
+            <SubmitButton busyLabel="Saving…">Complete inspection</SubmitButton>
+          </PendingForm>
         ) : null}
       </div>
     </DashboardFrame>

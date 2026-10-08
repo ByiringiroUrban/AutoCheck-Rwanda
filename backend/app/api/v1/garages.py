@@ -8,6 +8,8 @@ from app.schemas.organization import (
     OrganizationCreate,
     OrganizationResponse,
     OrganizationStatusUpdate,
+    OrganizationSelfUpdate,
+    InventoryVehicle,
     StaffInvite,
     StaffRoleUpdate,
     OrganizationMemberResponse,
@@ -53,6 +55,78 @@ async def get_my_garage_profile(
     if not org:
         raise NotFoundException("Garage association for current user", current_user.id)
     return org
+
+
+@router.patch("/me", response_model=OrganizationResponse)
+async def update_my_garage(
+    body: OrganizationSelfUpdate,
+    current_user: UserResponse = Depends(require_role(["GARAGE_MANAGER", "DEALER", "ADMIN", "SUPER_ADMIN"])),
+    db: Prisma = Depends(get_db),
+):
+    """Update the signed-in manager's garage name, phone, email, or location."""
+    service = GarageService(db)
+    org = await service.get_user_garage(current_user.id)
+    if not org:
+        raise NotFoundException("Garage association for current user", current_user.id)
+    location = body.location or body.address
+    data = {}
+    if body.name is not None:
+        data["name"] = body.name.strip()
+    if body.phone is not None:
+        data["phone"] = body.phone.strip()
+    if body.email is not None:
+        data["email"] = str(body.email)
+    if location is not None:
+        data["location"] = location.strip()
+    if not data:
+        return org
+    updated = await db.organization.update(where={"id": org.id}, data=data)
+    return OrganizationResponse.model_validate(updated)
+
+
+@router.get("/inventory", response_model=List[InventoryVehicle])
+async def list_garage_inventory(
+    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "DEALER", "ADMIN", "SUPER_ADMIN"])),
+    db: Prisma = Depends(get_db),
+):
+    """Vehicles this garage has serviced or inspected, with plate and latest mileage."""
+    service = GarageService(db)
+    org = await service.get_user_garage(current_user.id)
+    if not org:
+        raise ForbiddenException("User is not associated with an approved garage.")
+
+    services = await db.servicerecord.find_many(
+        where={"organization_id": org.id},
+        include={"vehicle": {"include": {"plates": True, "mileage_records": True}}},
+    )
+    inspections = await db.inspection.find_many(
+        where={"organization_id": org.id},
+        include={"vehicle": {"include": {"plates": True, "mileage_records": True}}},
+    )
+    seen: dict[str, InventoryVehicle] = {}
+    for row in list(services) + list(inspections):
+        vehicle = row.vehicle
+        if not vehicle or vehicle.id in seen:
+            continue
+        plate = None
+        for item in vehicle.plates or []:
+            if item.is_current:
+                plate = item.plate_number
+                break
+        latest = None
+        for reading in vehicle.mileage_records or []:
+            if latest is None or reading.mileage > latest:
+                latest = reading.mileage
+        seen[vehicle.id] = InventoryVehicle(
+            id=vehicle.id,
+            vin=vehicle.vin,
+            make=vehicle.make,
+            model=vehicle.model,
+            year=vehicle.year,
+            current_plate=plate,
+            latest_mileage=latest,
+        )
+    return list(seen.values())
 
 
 @router.get("/staff", response_model=List[OrganizationMemberResponse])

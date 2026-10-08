@@ -6,6 +6,7 @@ import type {
   Dispute,
   Inspection,
   InspectionItem,
+  InventoryVehicle,
   MessageResponse,
   MileageHistory,
   Organization,
@@ -17,6 +18,7 @@ import type {
   TokenPair,
   UploadResult,
   User,
+  UserPage,
   Vehicle,
 } from "@/types/api";
 
@@ -45,8 +47,13 @@ export const endpoints = {
       skipAuthRedirect: true,
     }),
 
-  updateMe: (body: { first_name?: string; last_name?: string; phone?: string; password?: string }) =>
-    api<User>("/api/v1/users/me", { method: "PATCH", json: body }),
+  updateMe: (body: {
+    first_name?: string;
+    last_name?: string;
+    phone?: string;
+    old_password?: string;
+    new_password?: string;
+  }) => api<User>("/api/v1/users/me", { method: "PATCH", json: body }),
 
   searchVehicle: (query: { vin?: string; plate?: string }) => {
     const params = new URLSearchParams();
@@ -94,6 +101,11 @@ export const endpoints = {
     api<Organization>("/api/v1/garages/applications", { method: "POST", json: body, skipAuthRedirect: true }),
 
   myGarage: () => api<Organization>("/api/v1/garages/me"),
+
+  updateMyGarage: (body: { name?: string; phone?: string; email?: string; location?: string }) =>
+    api<Organization>("/api/v1/garages/me", { method: "PATCH", json: body }),
+
+  garageInventory: () => api<InventoryVehicle[]>("/api/v1/garages/inventory"),
 
   garageStaff: () => api<OrganizationMember[]>("/api/v1/garages/staff"),
 
@@ -152,14 +164,29 @@ export const endpoints = {
 
   adminDisputes: () => api<Dispute[]>("/api/v1/admin/disputes"),
 
-  resolveDispute: (id: string, body: { status: string; resolution_notes: string }) =>
-    api<Dispute>(`/api/v1/admin/disputes/${id}`, { method: "PATCH", json: body }),
+  resolveDispute: (
+    id: string,
+    body: {
+      status: string;
+      resolution_notes: string;
+      target_type?: string;
+      target_id?: string;
+      corrected_payload?: { mileage?: number; description?: string; service_type?: string };
+    },
+  ) => api<Dispute>(`/api/v1/admin/disputes/${id}`, { method: "PATCH", json: body }),
 
   auditLogs: () => api<AuditLog[]>("/api/v1/admin/audit-logs"),
 
   adminStats: () => api<AdminStats>("/api/v1/admin/stats"),
 
-  adminUsers: () => api<User[]>("/api/v1/admin/users"),
+  adminUsers: (query?: { page?: number; role?: string; search?: string }) => {
+    const params = new URLSearchParams();
+    params.set("page", String(query?.page || 1));
+    params.set("limit", "20");
+    if (query?.role) params.set("role", query.role);
+    if (query?.search) params.set("search", query.search);
+    return api<UserPage>(`/api/v1/admin/users?${params.toString()}`);
+  },
 
   updateAdminUser: (id: string, body: { role?: string; status?: string }) =>
     api<User>(`/api/v1/admin/users/${id}`, { method: "PATCH", json: body }),

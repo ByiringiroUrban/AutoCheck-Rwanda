@@ -19,6 +19,23 @@ export interface User {
   updated_at?: string | null;
 }
 
+export interface UserPage {
+  items: User[];
+  total: number;
+  page: number;
+  pages: number;
+}
+
+export interface InventoryVehicle {
+  id: string;
+  vin: string;
+  make: string;
+  model: string;
+  year: number;
+  current_plate?: string | null;
+  latest_mileage?: number | null;
+}
+
 export interface TokenPair {
   access_token: string;
   refresh_token: string;

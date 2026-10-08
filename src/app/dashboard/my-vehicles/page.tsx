@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DashboardFrame } from "@/components/DashboardFrame";
+import { PendingForm, SubmitButton } from "@/components/dashboard/actions";
 import { Alert, Spinner, fieldClass } from "@/components/ui";
 import { ApiError, apiUrl } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
@@ -88,7 +89,7 @@ function MyVehiclesBody() {
             </article>
           ))}
         </div>
-        <form method="post" onSubmit={onClaim} className="max-w-xl space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-5 shadow-sm">
+        <PendingForm onSubmit={onClaim} className="max-w-xl space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-5 shadow-sm">
           <h2 className="m-0 text-[18px] font-bold">Claim a vehicle</h2>
           <p className="text-[13px] text-[#666]">
             Search by VIN, then attach a photo of the yellow card. The API stores the claim against the vehicle id and the evidence URL.
@@ -99,10 +100,8 @@ function MyVehiclesBody() {
             Proof of ownership
             <input name="proof" type="file" accept="image/jpeg,image/png,image/webp" className="mt-1 block text-[13px] font-normal" />
           </label>
-          <button type="submit" className="ac-btn px-5">
-            Submit claim
-          </button>
-        </form>
+          <SubmitButton busyLabel="Submitting…">Submit claim</SubmitButton>
+        </PendingForm>
       </div>
     </DashboardFrame>
   );

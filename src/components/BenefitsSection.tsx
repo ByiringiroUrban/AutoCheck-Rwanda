@@ -33,10 +33,10 @@ export function BenefitsSection() {
             {benefits.map((card) => (
               <div key={card.title} className="mb-[14px] w-full px-[10.5px] md:w-1/3">
                 <div className="p-[15px]">
-                  <h2 className="mb-[7px] text-[19px] font-bold leading-[28px] text-ac-ink">
+                  <h2 className="mb-[7px] text-[15px] font-medium leading-[20px] text-ac-ink">
                     {card.eyebrow}
                   </h2>
-                  <h3 className="mb-[7px] text-[20px] min-[769px]:text-[22.5px] font-bold leading-[28px] text-ac-blue">
+                  <h3 className="mb-[7px] text-[16px] font-medium leading-[22px] text-ac-blue">
                     {card.title}
                   </h3>
                   {/* eslint-disable-next-line @next/next/no-img-element */}

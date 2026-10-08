@@ -5,6 +5,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ImageUploader, emptySlots, type UploadSlot } from "@/components/ImageUploader";
 import { ProvenanceBadge } from "@/components/HistoryTimeline";
 import { DashboardFrame } from "@/components/DashboardFrame";
+import { AsyncButton } from "@/components/dashboard/actions";
 import { Alert, Spinner, fieldClass } from "@/components/ui";
 import { ApiError, apiUrl } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
@@ -75,9 +76,9 @@ function AiBody() {
           <>
             <input value={vin} onChange={(event) => setVin(event.target.value.toUpperCase())} maxLength={17} placeholder="Vehicle VIN" className={`${fieldClass} max-w-md`} />
             <ImageUploader slots={slots} onChange={setSlots} />
-            <button type="button" className="ac-btn px-5" onClick={() => void run()} disabled={phase === "running"}>
+            <AsyncButton busyLabel="Running…" onClick={run} disabled={phase === "running"}>
               Run inspection
-            </button>
+            </AsyncButton>
           </>
         ) : null}
         {job ? (

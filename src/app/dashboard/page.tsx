@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DataTable } from "@/components/DataTable";
 import { BarChart, DashboardSkeleton, MixChart, StatGrid } from "@/components/dashboard/OverviewCharts";
@@ -12,6 +11,7 @@ import { endpoints } from "@/services/endpoints";
 import { useAuth } from "@/hooks/useAuth";
 import type { Dispute, Ownership, Report } from "@/types/api";
 import { OWNER_ROLES } from "@/utils/roles";
+import { ReportPreview } from "@/components/report/ReportPreview";
 import { formatWhen } from "@/utils/validation";
 
 function DashboardBody() {
@@ -21,6 +21,7 @@ function DashboardBody() {
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [openReportId, setOpenReportId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -88,18 +89,11 @@ function DashboardBody() {
               { key: "when", header: "Generated", render: (row) => formatWhen(row.generated_at) },
               { key: "score", header: "Score", render: (row) => row.score },
               { key: "status", header: "Status", render: (row) => row.status },
-              {
-                key: "open",
-                header: "Report",
-                render: (row) => (
-                  <Link href={`/reports/${row.id}`} className="font-semibold text-ac-blue">
-                    View
-                  </Link>
-                ),
-              },
             ]}
+            rowActions={(row) => [{ label: "Open report", onClick: () => setOpenReportId(row.id) }]}
           />
         </section>
+        {openReportId ? <ReportPreview reportId={openReportId} onClose={() => setOpenReportId(null)} /> : null}
       </div>
     </DashboardFrame>
   );

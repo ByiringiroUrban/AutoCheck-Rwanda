@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { ApiError, apiUrl } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
+import { Loader2 } from "lucide-react";
 import { Alert, fieldClass } from "@/components/ui";
 import { lookupVehicle } from "@/hooks/useVehicleSearch";
 
@@ -91,7 +92,8 @@ export function DisputeForm() {
         </label>
         <input id="dispute-file" name="evidence" type="file" accept="image/jpeg,image/png,image/webp" className="text-[13px]" />
       </div>
-      <button type="submit" className="ac-btn px-6" disabled={pending}>
+      <button type="submit" className="ac-btn gap-2 px-6" disabled={pending}>
+        {pending ? <Loader2 className="animate-spin" size={16} aria-hidden="true" /> : null}
         {pending ? "Submitting…" : "Submit Dispute"}
       </button>
     </form>

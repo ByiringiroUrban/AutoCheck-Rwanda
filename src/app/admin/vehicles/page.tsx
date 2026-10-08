@@ -5,6 +5,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { HistoryTimeline } from "@/components/HistoryTimeline";
 import { VehicleIdentityCard } from "@/components/VehicleIdentityCard";
 import { DashboardFrame } from "@/components/DashboardFrame";
+import { PendingForm, SubmitButton } from "@/components/dashboard/actions";
 import { Alert, fieldClass } from "@/components/ui";
 import { endpoints } from "@/services/endpoints";
 import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
@@ -45,11 +46,11 @@ function Registry() {
     <DashboardFrame title="Vehicle master registry" subtitle="Look up a VIN or plate and inspect the provenance on each timeline event.">
       <div className="max-w-2xl space-y-4">
         {error ? <Alert>{error}</Alert> : null}
-        <form method="post" onSubmit={find} className="space-y-3 rounded-[8px] bg-white p-4">
+        <PendingForm onSubmit={find} className="space-y-3 rounded-[8px] bg-white p-4">
           <input name="vin" maxLength={17} placeholder="VIN" className={fieldClass} />
           <input name="plate" placeholder="Or Rwanda plate" className={fieldClass} />
-          <button type="submit" className="ac-btn px-5">Inspect vehicle</button>
-        </form>
+          <SubmitButton busyLabel="Looking up…">Inspect vehicle</SubmitButton>
+        </PendingForm>
         {vehicle ? <VehicleIdentityCard vehicle={vehicle} mask={false} /> : null}
         {vehicle ? <HistoryTimeline items={items} /> : null}
       </div>

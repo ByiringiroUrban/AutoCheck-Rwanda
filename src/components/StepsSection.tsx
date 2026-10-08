@@ -20,12 +20,12 @@ export function StepsSection() {
     <div className="ac-container">
       <div className="mx-[-10.5px] flex flex-wrap">
         <div className="my-[42px] w-full px-[10.5px] md:w-1/2">
-          <h2 className="mb-[7px] py-[3.5px] text-[28px] font-bold leading-[28px] text-ac-ink">
+          <h2 className="mb-[7px] py-[3.5px] text-[22px] font-medium leading-[28px] text-ac-ink">
             Get The AutoCheck Rwanda Report
           </h2>
           {steps.map((step) => (
             <div key={step.title}>
-              <h3 className="mb-[7px] text-[20px] min-[769px]:text-[22.5px] font-bold leading-[28px] text-ac-blue">
+              <h3 className="mb-[7px] text-[16px] font-medium leading-[22px] text-ac-blue">
                 {step.title}
               </h3>
               <p className="mb-[14px] text-[14px] leading-[21px]">{step.body}</p>

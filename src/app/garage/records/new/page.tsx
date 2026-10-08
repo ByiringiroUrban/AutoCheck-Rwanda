@@ -4,25 +4,28 @@ import { useState, type FormEvent } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { VehicleIdentityCard } from "@/components/VehicleIdentityCard";
 import { DashboardFrame } from "@/components/DashboardFrame";
+import { PendingForm, SubmitButton } from "@/components/dashboard/actions";
 import { Alert, fieldClass } from "@/components/ui";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
 import { lookupVehicle } from "@/hooks/useVehicleSearch";
 import type { Vehicle } from "@/types/api";
-import { STAFF_ROLES } from "@/utils/roles";
+import { useRouter } from "next/navigation";
+import { GARAGE_ROLES } from "@/utils/roles";
 import { validateMileage, validateVin } from "@/utils/validation";
 
 const TYPES = ["ROUTINE_MAINTENANCE", "OIL_CHANGE", "BRAKE_SERVICE", "MAJOR_REPAIR"];
 
 export default function NewServicePage() {
   return (
-    <ProtectedRoute allow={STAFF_ROLES}>
+    <ProtectedRoute allow={GARAGE_ROLES}>
       <ServiceForm />
     </ProtectedRoute>
   );
 }
 
 function ServiceForm() {
+  const router = useRouter();
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
@@ -97,6 +100,7 @@ function ServiceForm() {
       });
       setNote(`Service record ${record.id} saved.`);
       setError(null);
+      router.push(`/garage/history?vin=${encodeURIComponent(vehicle.vin)}`);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "The service record could not be saved.");
     }
@@ -108,14 +112,12 @@ function ServiceForm() {
         {error ? <Alert>{error}</Alert> : null}
         {warning ? <Alert tone="warn">{warning}</Alert> : null}
         {note ? <Alert tone="ok">{note}</Alert> : null}
-        <form method="post" onSubmit={find} className="flex flex-col gap-3 sm:flex-row">
+        <PendingForm onSubmit={find} className="flex flex-col gap-3 sm:flex-row">
           <input name="vin" required maxLength={17} placeholder="VIN" className={fieldClass} />
-          <button type="submit" className="ac-btn px-5">
-            Look up
-          </button>
-        </form>
+          <SubmitButton busyLabel="Looking up…">Look up</SubmitButton>
+        </PendingForm>
         {creating ? (
-          <form method="post" onSubmit={createIdentity} className="space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4">
+          <PendingForm onSubmit={createIdentity} className="space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4">
             <h2 className="m-0 text-[16px] font-bold">Create vehicle identity</h2>
             <input name="vin" required maxLength={17} placeholder="VIN" className={fieldClass} />
             <input name="make" required placeholder="Make" className={fieldClass} />
@@ -125,15 +127,13 @@ function ServiceForm() {
             <input name="body_type" placeholder="Body type" defaultValue="SEDAN" className={fieldClass} />
             <input name="fuel_type" placeholder="Fuel" defaultValue="PETROL" className={fieldClass} />
             <input name="color" placeholder="Colour" defaultValue="UNKNOWN" className={fieldClass} />
-            <button type="submit" className="ac-btn px-5">
-              Create vehicle
-            </button>
-          </form>
+            <SubmitButton busyLabel="Creating…">Create vehicle</SubmitButton>
+          </PendingForm>
         ) : null}
         {vehicle ? (
           <>
             <VehicleIdentityCard vehicle={vehicle} mask={false} />
-            <form method="post" onSubmit={saveRecord} className="space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4">
+            <PendingForm onSubmit={saveRecord} className="space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4">
               <label className="block text-[13px] font-semibold">
                 Mileage (km)
                 <input name="mileage" required className={`${fieldClass} mt-1`} />
@@ -160,10 +160,8 @@ function ServiceForm() {
                 Service date
                 <input name="service_date" type="date" className={`${fieldClass} mt-1`} />
               </label>
-              <button type="submit" className="ac-btn px-5">
-                Save service record
-              </button>
-            </form>
+              <SubmitButton busyLabel="Saving…">Save service record</SubmitButton>
+            </PendingForm>
           </>
         ) : null}
       </div>

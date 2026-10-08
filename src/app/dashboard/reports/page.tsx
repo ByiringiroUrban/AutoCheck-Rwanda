@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DataTable } from "@/components/DataTable";
 import { DashboardFrame } from "@/components/DashboardFrame";
@@ -10,6 +9,7 @@ import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
 import type { Report } from "@/types/api";
 import { OWNER_ROLES } from "@/utils/roles";
+import { ReportPreview } from "@/components/report/ReportPreview";
 import { formatWhen } from "@/utils/validation";
 
 export default function SavedReportsPage() {
@@ -24,6 +24,7 @@ function ReportsBody() {
   const [rows, setRows] = useState<Report[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [openReportId, setOpenReportId] = useState<string | null>(null);
 
   useEffect(() => {
     endpoints
@@ -45,17 +46,10 @@ function ReportsBody() {
           { key: "when", header: "Generated", render: (row) => formatWhen(row.generated_at) },
           { key: "score", header: "Score", render: (row) => row.score },
           { key: "status", header: "Status", render: (row) => row.status },
-          {
-            key: "open",
-            header: "Report",
-            render: (row) => (
-              <Link href={`/reports/${row.id}`} className="font-semibold text-ac-blue">
-                View
-              </Link>
-            ),
-          },
         ]}
+        rowActions={(row) => [{ label: "Open report", onClick: () => setOpenReportId(row.id) }]}
       />
+      {openReportId ? <ReportPreview reportId={openReportId} onClose={() => setOpenReportId(null)} /> : null}
     </DashboardFrame>
   );
 }

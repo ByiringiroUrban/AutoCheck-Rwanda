@@ -1,11 +1,10 @@
-export function StatGrid({ items }: { items: { label: string; value: number | string }[] }) {
+import { StatCard } from "@/components/dashboard/kit";
+
+export function StatGrid({ items }: { items: { label: string; value: number | string; hint?: string }[] }) {
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {items.map((item) => (
-        <div key={item.label} className="rounded-xl border border-solid border-[#e6eeee] bg-white p-4 shadow-sm">
-          <p className="m-0 text-[12px] font-semibold uppercase tracking-wide text-[#7a8686]">{item.label}</p>
-          <p className="m-0 mt-1 text-[30px] font-bold leading-none text-ac-navy">{item.value}</p>
-        </div>
+        <StatCard key={item.label} label={item.label} value={item.value} hint={item.hint} />
       ))}
     </div>
   );
@@ -20,8 +19,8 @@ export function BarChart({
 }) {
   const max = Math.max(1, ...items.map((item) => item.value));
   return (
-    <section className="rounded-xl border border-solid border-[#e6eeee] bg-white p-4 shadow-sm">
-      <h2 className="m-0 mb-4 text-[16px] font-bold">{title}</h2>
+    <section className="rounded-xl border border-solid border-[#e3ebeb] bg-white p-4 shadow-sm">
+      <h2 className="m-0 mb-4 text-[16px] font-bold text-ac-navy">{title}</h2>
       {items.length === 0 ? (
         <p className="m-0 text-[14px] text-[#667]">Nothing to chart yet.</p>
       ) : (
@@ -64,8 +63,8 @@ export function MixChart({
           .join(", ");
 
   return (
-    <section className="rounded-xl border border-solid border-[#e6eeee] bg-white p-4 shadow-sm">
-      <h2 className="m-0 mb-4 text-[16px] font-bold">{title}</h2>
+    <section className="rounded-xl border border-solid border-[#e3ebeb] bg-white p-4 shadow-sm">
+      <h2 className="m-0 mb-4 text-[16px] font-bold text-ac-navy">{title}</h2>
       <div className="flex flex-wrap items-center gap-5">
         <div className="h-32 w-32 shrink-0 rounded-full" style={{ background: `conic-gradient(${stops})` }} />
         <ul className="m-0 list-none p-0 text-[13px]">

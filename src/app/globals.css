@@ -3,8 +3,7 @@
 /*
  * AutoCheck design tokens — extracted via getComputedStyle from
  * https://www.autocheck.com/vehiclehistory/ (Bootstrap 5 base, root font-size 14px).
- * The site declares `font-family: Roboto, sans-serif` but never loads a Roboto
- * webfont, so it renders in the platform sans-serif fallback. We mirror that exactly.
+ * Type is BIZ UDPGothic across public pages and dashboards.
  */
 :root {
   --ac-ink: #212529; /* body text rgb(33,37,41) */
@@ -41,7 +40,7 @@
   --color-ac-danger: var(--ac-danger);
   --color-ac-light: var(--ac-light);
   --color-ac-dropdown-border: var(--ac-dropdown-border);
-  --font-sans: Roboto, sans-serif;
+  --font-sans: "BIZ UDPGothic", sans-serif;
   /* Bootstrap breakpoints used by the original */
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
@@ -52,17 +51,32 @@
 @layer base {
 html {
   font-size: 14px; /* original root font-size; 1rem = 14px */
+  font-synthesis: none;
+}
+
+.biz-udpgothic-regular {
+  font-family: "BIZ UDPGothic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 body {
   margin: 0;
   background: #ffffff;
   color: var(--ac-ink);
-  font-family: Roboto, sans-serif;
+  font-family: "BIZ UDPGothic", sans-serif;
   font-size: 14px;
   font-weight: 400;
+  font-style: normal;
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 a {
@@ -113,9 +127,16 @@ img {
 .ac-btn:active {
   background-color: var(--ac-magenta-hover);
 }
+.ac-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+.ac-btn:disabled {
+  cursor: progress;
+  opacity: 0.72;
+}
 .ac-btn:focus-visible {
   outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(175, 22, 133, 0.5);
+  box-shadow: 0 0 0 0.25rem rgba(243, 121, 32, 0.35);
 }
 
 /* Bootstrap-like caret for dropdown toggles */
@@ -137,4 +158,12 @@ img {
 }
 .ac-logo-zoom {
   animation: ac-logo-zoom 1.15s ease-in-out infinite;
+}
+
+@keyframes ac-nav-progress {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(380%); }
+}
+.ac-nav-progress {
+  animation: ac-nav-progress 0.85s ease-in-out infinite;
 }

@@ -51,22 +51,12 @@ function Orgs() {
             { key: "tin", header: "TIN", render: (row) => row.tin },
             { key: "where", header: "Location", render: (row) => row.location },
             { key: "status", header: "Status", render: (row) => row.status },
-            {
-              key: "actions",
-              header: "",
-              render: (row) => (
-                <div className="flex gap-2">
-                  <button type="button" className="text-[13px] font-bold text-emerald-700" onClick={() => void setStatus(row.id, "APPROVED")}>
-                    Approve
-                  </button>
-                  <button type="button" className="text-[13px] font-bold text-ac-danger" onClick={() => void setStatus(row.id, "REJECTED")}>
-                    Reject
-                  </button>
-                </div>
-              ),
-            },
           ] as Column<Organization>[]
         }
+        rowActions={(row) => [
+          { label: "Approve", onClick: () => setStatus(row.id, "APPROVED") },
+          { label: "Reject", danger: true, onClick: () => setStatus(row.id, "REJECTED") },
+        ]}
       />
     </DashboardFrame>
   );

@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { VehicleIdentityCard } from "@/components/VehicleIdentityCard";
 import { DashboardFrame } from "@/components/DashboardFrame";
+import { PendingForm, SubmitButton } from "@/components/dashboard/actions";
 import { Alert, fieldClass } from "@/components/ui";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
@@ -74,12 +75,12 @@ function VehiclesBody() {
       <div className="max-w-xl space-y-4">
         {error && !creating ? <Alert>{error}</Alert> : null}
         {note ? <Alert tone="ok">{note}</Alert> : null}
-        <form method="post" onSubmit={find} className="flex flex-col gap-3 sm:flex-row">
+        <PendingForm onSubmit={find} className="flex flex-col gap-3 sm:flex-row">
           <input name="vin" required maxLength={17} placeholder="VIN" className={fieldClass} />
-          <button type="submit" className="ac-btn px-5">Look up</button>
-        </form>
+          <SubmitButton busyLabel="Looking up…">Look up</SubmitButton>
+        </PendingForm>
         {creating ? (
-          <form method="post" onSubmit={createIdentity} className="space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4">
+          <PendingForm onSubmit={createIdentity} className="space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-4">
             <h2 className="m-0 text-[16px] font-bold">This VIN is not in the registry</h2>
             <input name="vin" required maxLength={17} placeholder="VIN" className={fieldClass} />
             <input name="make" required placeholder="Make" className={fieldClass} />
@@ -89,8 +90,8 @@ function VehiclesBody() {
             <input name="body_type" placeholder="Body type" defaultValue="SEDAN" className={fieldClass} />
             <input name="fuel_type" placeholder="Fuel" defaultValue="PETROL" className={fieldClass} />
             <input name="color" placeholder="Colour" defaultValue="UNKNOWN" className={fieldClass} />
-            <button type="submit" className="ac-btn px-5">Create vehicle</button>
-          </form>
+            <SubmitButton busyLabel="Creating…">Create vehicle</SubmitButton>
+          </PendingForm>
         ) : null}
         {vehicle ? <VehicleIdentityCard vehicle={vehicle} mask={false} /> : null}
       </div>

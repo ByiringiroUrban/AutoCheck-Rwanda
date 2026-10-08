@@ -2,18 +2,18 @@
 
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { AppShell, Alert, PageHeading, Spinner } from "@/components/ui";
 import { VehicleIdentityCard } from "@/components/VehicleIdentityCard";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
 import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
 import { useAuth } from "@/hooks/useAuth";
+import { ReportPreview } from "@/components/report/ReportPreview";
 import type { Vehicle } from "@/types/api";
 
 function SearchResultsBody() {
   const params = useSearchParams();
-  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const vin = params.get("vin") || "";
   const plate = params.get("plate") || "";
@@ -21,6 +21,7 @@ function SearchResultsBody() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [buying, setBuying] = useState(false);
+  const [openReportId, setOpenReportId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -51,7 +52,7 @@ function SearchResultsBody() {
     setError(null);
     try {
       const report = await endpoints.generateReport(vehicle.id);
-      router.push(`/reports/${report.id}`);
+      setOpenReportId(report.id);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "The report could not be generated.");
     } finally {
@@ -87,6 +88,7 @@ function SearchResultsBody() {
             </div>
           </>
         ) : null}
+        {openReportId ? <ReportPreview reportId={openReportId} onClose={() => setOpenReportId(null)} /> : null}
       </div>
     </AppShell>
   );

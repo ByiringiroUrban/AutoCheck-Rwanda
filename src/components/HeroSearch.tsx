@@ -179,7 +179,7 @@ export function HeroSearch() {
           height={284}
           className="w-full h-auto"
         />
-        <h2 className="m-0 mb-[7px] px-4 text-[19px] leading-[28px] font-bold text-ac-ink text-center">
+        <h2 className="m-0 mb-[7px] px-4 text-[16px] leading-[22px] font-medium text-ac-ink text-center">
           AutoCheck Rwanda helps you buy and sell with confidence.
         </h2>
       </div>
@@ -191,7 +191,7 @@ export function HeroSearch() {
             <div className="bg-ac-card p-[10px] rounded-[10px] shadow-[0_0_5px_1px_rgba(0,0,0,0.3)] my-[20px] min-[769px]:mt-[42px] min-[769px]:mb-[42px]">
               {/* Header bar */}
               <div className="bg-ac-navy rounded-t-[10px] mt-[-15px] mx-[-10.5px] mb-0 p-[15px] text-center">
-                <h2 className="m-0 text-[29px] font-normal leading-[28px] text-white">
+                <h2 className="m-0 text-[18px] font-medium leading-[24px] text-white">
                   AutoCheck Rwanda Vehicle History Reports
                 </h2>
               </div>
