@@ -53,10 +53,16 @@ class CloudinaryService:
         if not cls.is_configured():
             raise InternalServerException("Cloudinary is not configured on the server.")
 
-        # Read bytes if UploadFile
-        if isinstance(file, UploadFile):
+        # Read bytes using duck-typing to avoid isinstance issues with uvicorn reloader
+        if hasattr(file, "file") and hasattr(file, "read") and hasattr(file, "seek"):
+            # It's an UploadFile
             file_bytes = await file.read()
             await file.seek(0)
+        elif hasattr(file, "read"):
+            # Sync file-like object
+            file_bytes = file.read()
+            if hasattr(file, "seek"):
+                file.seek(0)
         else:
             file_bytes = file
 

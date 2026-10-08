@@ -42,7 +42,7 @@ async def test_forgot_password_generic_response(async_client: AsyncClient):
     assert response.status_code == 200
     data = response.json()
     assert data["success"] is True
-    assert "instructions" in data["message"]
+    assert "verification code" in data["message"].lower()
 
 
 @pytest.mark.anyio

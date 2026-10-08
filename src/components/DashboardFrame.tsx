@@ -24,6 +24,8 @@ export function DashboardFrame({
   const account = accountLinkForRole(user?.role);
   const initials = `${user?.first_name?.[0] || ""}${user?.last_name?.[0] || ""}`.toUpperCase() || "AC";
 
+  const [expanded, setExpanded] = useState(true);
+
   useEffect(() => {
     if (!menu) return;
     const onDown = (event: MouseEvent) => {
@@ -39,6 +41,10 @@ export function DashboardFrame({
       document.removeEventListener("keydown", onKey);
     };
   }, [menu]);
+
+  // Handle icons
+  const ChevronLeft = require("lucide-react").ChevronLeft;
+  const ChevronRight = require("lucide-react").ChevronRight;
 
   return (
     <div className="min-h-screen bg-[#eef3f3] text-ac-ink">
@@ -61,7 +67,7 @@ export function DashboardFrame({
         <div className="relative" ref={menuRef}>
           <button
             type="button"
-            className="flex items-center gap-2 rounded-full border border-solid border-[#d5e0e0] bg-white py-1 pl-1 pr-3"
+            className="flex items-center justify-center rounded-full border border-solid border-[#d5e0e0] bg-white p-[2px] hover:bg-[#f4f8f8] transition-colors"
             aria-label="Account menu"
             aria-expanded={menu}
             aria-haspopup="menu"
@@ -71,19 +77,13 @@ export function DashboardFrame({
               <img
                 src={user.avatar_url}
                 alt=""
-                className="h-8 w-8 rounded-full object-cover border border-[#cbd5e1]"
+                className="h-10 w-10 rounded-full object-cover border border-[#cbd5e1]"
               />
             ) : (
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-ac-magenta text-[12px] font-bold text-white">
+              <span className="grid h-10 w-10 place-items-center rounded-full bg-ac-magenta text-[14px] font-bold text-white">
                 {initials}
               </span>
             )}
-            <span className="hidden text-left sm:block">
-              <span className="block text-[13px] font-semibold leading-4 text-ac-ink">
-                {user ? user.first_name : "Account"}
-              </span>
-              <span className="block text-[11px] leading-4 text-[#7a8686]">{user?.role || ""}</span>
-            </span>
           </button>
           {menu ? (
             <div role="menu" className="absolute right-0 top-12 w-64 rounded-xl border border-solid border-[#e3ebeb] bg-white p-3 text-ac-ink shadow-lg">
@@ -140,37 +140,56 @@ export function DashboardFrame({
       ) : null}
 
       <aside
-        className={`fixed bottom-0 left-0 top-16 z-30 w-64 overflow-y-auto bg-ac-navy text-white ${
+        className={`fixed bottom-0 left-0 top-16 z-30 overflow-y-auto bg-ac-navy text-white transition-all duration-300 flex flex-col ${
           open ? "block" : "hidden"
-        } md:block`}
+        } md:flex ${expanded ? "md:w-64" : "md:w-20"}`}
+        style={{ width: open ? "16rem" : undefined }} // force 64 for mobile overlay
       >
-        <nav className="pb-8 pt-3">
+        <nav className="flex-1 pb-8 pt-3 overflow-x-hidden">
           {groups.map((group) => (
             <div key={group.label} className="mb-2">
-              <p className="m-0 px-4 pb-1 pt-3 text-[11px] font-bold uppercase tracking-[0.08em] text-white/45">
-                {group.label}
-              </p>
+              {expanded ? (
+                <p className="m-0 px-4 pb-1 pt-3 text-[11px] font-bold uppercase tracking-[0.08em] text-white/45">
+                  {group.label}
+                </p>
+              ) : (
+                <div className="h-8" /> // Spacer for minimized
+              )}
               {group.links.map((item) => {
                 const active = linkIsActive(path, item.href);
+                const Icon = item.icon;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
+                    title={!expanded ? item.label : undefined}
                     onClick={() => setOpen(false)}
-                    className={`mx-2 block rounded-md px-3 py-2 text-[14px] no-underline ${
+                    className={`mx-2 mb-1 flex items-center rounded-md px-3 py-2 text-[14px] no-underline transition-colors ${
                       active ? "bg-white/15 font-bold text-white" : "font-medium text-white/80 hover:bg-white/10 hover:text-white"
-                    }`}
+                    } ${expanded ? "justify-start" : "justify-center"}`}
                   >
-                    {item.label}
+                    {Icon ? <Icon className={`${expanded ? "w-5 h-5 mr-3" : "w-6 h-6"} shrink-0 transition-all`} /> : null}
+                    {expanded && <span className="truncate">{item.label}</span>}
                   </Link>
                 );
               })}
             </div>
           ))}
         </nav>
+
+        {/* Toggle Minimize Button */}
+        <div className="hidden md:block p-4 border-t border-white/10">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="flex w-full items-center justify-center rounded-md bg-white/5 py-2 text-white/60 hover:bg-white/10 hover:text-white transition-colors"
+            title={expanded ? "Collapse sidebar" : "Expand sidebar"}
+          >
+            {expanded ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+          </button>
+        </div>
       </aside>
 
-      <main className="min-h-screen pt-16 md:pl-64">
+      <main className={`min-h-screen pt-16 transition-all duration-300 ${expanded ? "md:pl-64" : "md:pl-20"}`}>
         <div className="px-4 py-5 md:px-6">
           <h1 className="m-0 text-[22px] font-bold text-ac-ink">{title}</h1>
           {subtitle ? <p className="mb-4 mt-1 text-[13px] text-[#667]">{subtitle}</p> : null}
