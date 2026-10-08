@@ -109,6 +109,9 @@ function GarageHome() {
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {[
+              ["/garage/vehicles", "Find / Register Vehicle", "Look up or register a new vehicle."],
+              ["/garage/records/new", "Add Service Record", "Record routine maintenance and history."],
+              ["/garage/inspections/new", "Add Inspection Checklist", "Perform standard safety inspections."],
               ["/garage/staff", "Staff management", "Invite mechanics and turn accounts on or off."],
               ["/dealer/inventory", "Dealer inventory", "Look up cars in the registry by VIN or plate."],
               ["/dealer/reports", "Bulk reports", "Open reports you have already generated."],

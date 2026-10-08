@@ -70,6 +70,14 @@ const STAFF_GROUPS: PortalGroup[] = [
 
 const MANAGER_GROUPS: PortalGroup[] = [
   { label: "Overview", links: [{ href: "/garage/dashboard", label: "Manager Overview", icon: LayoutDashboard }] },
+  {
+    label: "Workshop",
+    links: [
+      { href: "/garage/vehicles", label: "Find / Register Vehicle", icon: Search },
+      { href: "/garage/records/new", label: "Add Service Record", icon: Wrench },
+      { href: "/garage/inspections/new", label: "Add Inspection Checklist", icon: ClipboardCheck },
+    ],
+  },
   { label: "People", links: [{ href: "/garage/staff", label: "Staff Management", icon: Users }] },
   {
     label: "Dealership",
