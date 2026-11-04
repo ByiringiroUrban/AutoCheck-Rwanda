@@ -16,7 +16,7 @@ router = APIRouter(tags=["Service & Maintenance Records"])
 async def create_service_record(
     record_in: ServiceRecordCreate,
     request: Request,
-    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "ADMIN", "SUPER_ADMIN", "OWNER"])),
+    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "DEALER", "ADMIN", "SUPER_ADMIN", "OWNER"])),
     db: Prisma = Depends(get_db)
 ):
     """

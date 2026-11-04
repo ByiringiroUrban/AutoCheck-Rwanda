@@ -1,0 +1,10 @@
+venv
+.venv311
+_push_env.ps1
+__pycache__
+.pytest_cache
+.mypy_cache
+*.pyc
+.env
+.env.*
+tests

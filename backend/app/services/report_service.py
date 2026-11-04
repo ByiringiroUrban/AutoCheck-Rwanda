@@ -30,6 +30,7 @@ class ReportService:
             where={"id": vehicle_id},
             include={
                 "plates": True,
+                "images": True,
                 "ownerships": True,
                 "service_records": {"include": {"organization": True, "creator": True}},
                 "inspections": {"include": {"organization": True, "items": True}},
@@ -146,6 +147,17 @@ class ReportService:
 
         ownership_count = len(vehicle.ownerships or [])
         has_verified_ownership = any(o.verified for o in (vehicle.ownerships or []))
+        vehicle_images = [
+            image
+            for image in (vehicle.images or [])
+            if (getattr(image, "view_type", "") or "").upper() != "DOCUMENT"
+        ]
+        vehicle_images.sort(
+            key=lambda image: (
+                (getattr(image, "view_type", "") or "").upper() not in {"FRONT", "FRONT_LEFT", "FRONT_RIGHT"},
+                -image.created_at.timestamp(),
+            )
+        )
 
         snapshot = VehicleReportSnapshot(
             vehicle=VehicleResponse(
@@ -163,6 +175,7 @@ class ReportService:
                 current_plate=current_plate,
                 latest_mileage=mileage_data.latest_mileage,
             ),
+            vehicle_image_url=vehicle_images[0].image_url if vehicle_images else None,
             current_plate=current_plate,
             plate_history=plate_history,
             ownership_count=ownership_count,

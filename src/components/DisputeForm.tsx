@@ -7,6 +7,7 @@ import { endpoints } from "@/services/endpoints";
 import { Loader2 } from "lucide-react";
 import { Alert, fieldClass } from "@/components/ui";
 import { lookupVehicle } from "@/hooks/useVehicleSearch";
+import { Form } from "@/components/form/FormUI";
 
 const TARGETS = ["SERVICE_RECORD", "INSPECTION", "MILEAGE", "INCIDENT", "VEHICLE_DETAILS"];
 
@@ -47,7 +48,7 @@ export function DisputeForm() {
   };
 
   return (
-    <form method="post" onSubmit={onSubmit} className="space-y-4">
+    <Form method="post" onSubmit={onSubmit} className="space-y-4">
       {done ? <Alert tone="ok">{done}</Alert> : null}
       {error ? <Alert>{error}</Alert> : null}
       <div>
@@ -96,6 +97,6 @@ export function DisputeForm() {
         {pending ? <Loader2 className="animate-spin" size={16} aria-hidden="true" /> : null}
         {pending ? "Submitting…" : "Submit Dispute"}
       </button>
-    </form>
+    </Form>
   );
 }

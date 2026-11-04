@@ -42,6 +42,7 @@ const OWNER_GROUPS: PortalGroup[] = [
     label: "Vehicles",
     links: [
       { href: "/dashboard/my-vehicles", label: "My Vehicles", icon: Car },
+      { href: "/dashboard/my-vehicles#claim-vehicle", label: "Claim a Vehicle", icon: FileSignature },
       { href: "/dashboard/ai-inspection", label: "AI Damage Inspection", icon: ScanLine },
     ],
   },
@@ -53,6 +54,7 @@ const OWNER_GROUPS: PortalGroup[] = [
     ],
   },
   { label: "Account", links: [{ href: "/dashboard/settings", label: "Profile & Security", icon: ShieldCheck }] },
+  { label: "Business", links: [{ href: "/dealer/application", label: "Request Dealer Access", icon: FileSignature }] },
 ];
 
 const STAFF_GROUPS: PortalGroup[] = [
@@ -60,11 +62,11 @@ const STAFF_GROUPS: PortalGroup[] = [
   {
     label: "Workshop",
     links: [
-      { href: "/garage/vehicles", label: "Find / Register Vehicle", icon: Search },
       { href: "/garage/records/new", label: "Add Service Record", icon: Wrench },
       { href: "/garage/inspections/new", label: "Add Inspection Checklist", icon: ClipboardCheck },
     ],
   },
+  { label: "Business", links: [{ href: "/dealer/application", label: "Request Dealer Access", icon: FileSignature }] },
   { label: "History", links: [{ href: "/garage/history", label: "Recent Garage History", icon: History }] },
 ];
 
@@ -114,6 +116,7 @@ const SUPER_GROUPS: PortalGroup[] = [
   {
     label: "Access",
     links: [
+      { href: "/admin/organizations", label: "Organization Approvals", icon: Building2 },
       { href: "/admin/users", label: "Users & Role Assignment", icon: UsersRound },
       { href: "/admin/disputes", label: "Dispute Queue", icon: ListTodo },
       { href: "/admin/security", label: "Security & API Keys", icon: Key },

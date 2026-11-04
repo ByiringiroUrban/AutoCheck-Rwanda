@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, type ButtonHTMLAttributes, type FormEvent, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
+import { Form } from "@/components/form/FormUI";
 
 const PendingContext = createContext(false);
 
@@ -17,7 +18,7 @@ export function PendingForm({
   const [pending, setPending] = useState(false);
 
   return (
-    <form
+    <Form
       method="post"
       className={className}
       aria-busy={pending || undefined}
@@ -32,7 +33,7 @@ export function PendingForm({
       }}
     >
       <PendingContext.Provider value={pending}>{children}</PendingContext.Provider>
-    </form>
+    </Form>
   );
 }
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Form } from "@/components/form/FormUI";
 
 export default function AffiliateProgramPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -75,7 +76,7 @@ export default function AffiliateProgramPage() {
                   Ideal for automotive marketplaces, financial comparison portals, insurance brokers, and tech creators across Rwanda.
                 </p>
 
-                <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} className="space-y-4">
+                <Form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[13px] font-semibold text-ac-ink mb-1">Full Name *</label>
@@ -108,7 +109,7 @@ export default function AffiliateProgramPage() {
                       Apply to Affiliate Program
                     </button>
                   </div>
-                </form>
+                </Form>
               </>
             )}
           </div>

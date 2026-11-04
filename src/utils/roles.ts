@@ -2,6 +2,7 @@ export const OWNER_ROLES = ["OWNER"] as const;
 export const STAFF_ROLES = ["GARAGE_STAFF"] as const;
 export const MANAGER_ROLES = ["GARAGE_MANAGER", "DEALER"] as const;
 export const GARAGE_ROLES = ["GARAGE_STAFF", "GARAGE_MANAGER", "DEALER"] as const;
+export const DEALER_APPLICATION_ROLES = ["OWNER", "GARAGE_STAFF", "GARAGE_MANAGER", "DEALER"] as const;
 export const ADMIN_ROLES = ["ADMIN"] as const;
 export const SUPER_ROLES = ["SUPER_ADMIN"] as const;
 export const PLATFORM_ROLES = ["ADMIN", "SUPER_ADMIN"] as const;

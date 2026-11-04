@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const fieldClass =
-  "block w-full h-[38px] px-3 text-[14px] text-ac-ink bg-white border border-solid border-[#ccc] rounded-none focus:outline-0 focus:border-ac-blue focus:shadow-[0_0_0_0.2rem_rgba(11,76,76,0.15)]";
+  "ac-form-control block w-full min-h-10 px-3 text-[14px] text-ac-ink bg-white border border-solid border-[#d1d9e0] rounded-[6px] focus:outline-0 focus:border-ac-blue focus:shadow-[0_0_0_3px_rgba(11,76,76,0.12)]";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (

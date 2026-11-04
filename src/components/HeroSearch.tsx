@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, type FormEvent } from "react";
 import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
 import { validatePlate, validateVin } from "@/utils/validation";
+import { Form } from "@/components/form/FormUI";
 
 // ── Form styles ───────────────────────────────────────────────────────────────
 const inputBase =
@@ -124,7 +125,7 @@ export function HeroSearch() {
                 </p>
 
                 {/* VIN search */}
-                <form method="post" noValidate onSubmit={onVinSubmit}>
+                <Form method="post" noValidate onSubmit={onVinSubmit}>
                   <h4 className="m-0 pb-[10px] text-[16.8px] font-bold leading-[21.84px] text-ac-ink">
                     Search by VIN
                     <span className={`${helpLink} p-[15px]`}>
@@ -164,7 +165,7 @@ export function HeroSearch() {
                       </button>
                     </div>
                   </div>
-                </form>
+                </Form>
 
                 {/* OR divider */}
                 <div className="flex items-center mt-[10px] mb-[15px] mx-[-10.5px] text-[18px] font-bold italic leading-[27px] text-ac-or-gray">
@@ -175,7 +176,7 @@ export function HeroSearch() {
                 </div>
 
                 {/* Rwanda Plate search */}
-                <form method="post" noValidate onSubmit={onPlateSubmit}>
+                <Form method="post" noValidate onSubmit={onPlateSubmit}>
                   <h4 className="m-[7px] p-0 text-[16.8px] font-bold leading-[21.84px] text-ac-ink">
                     Search by Rwanda Plate Number
                   </h4>
@@ -220,7 +221,7 @@ export function HeroSearch() {
                       </a>
                     </div>
                   </div>
-                </form>
+                </Form>
 
                 {/* reCAPTCHA notice */}
                 <div className="flex flex-wrap mt-[14px] mx-[-10.5px]">

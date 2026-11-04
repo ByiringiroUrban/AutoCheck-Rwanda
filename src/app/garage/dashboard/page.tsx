@@ -92,7 +92,10 @@ function GarageHome() {
           <section className="rounded-[8px] border border-solid border-[#ddd] bg-white p-4 shadow-sm">
             <h2 className="m-0 text-[18px] font-bold">{org.name}</h2>
             <p className="m-0 text-[13px] text-[#555]">
-              {org.type} · {org.status} · {org.location} · TIN {org.tin}
+              {org.type} · {org.status}
+              {org.location ? ` · ${org.location}` : ""}
+              {org.tin ? ` · TIN ${org.tin}` : ""}
+              {org.applicant_type === "INDIVIDUAL" ? " · Individual dealer" : ""}
             </p>
           </section>
         ) : null}

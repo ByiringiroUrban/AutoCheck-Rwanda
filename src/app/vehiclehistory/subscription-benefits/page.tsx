@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
 import { validatePlate, validateVin } from "@/utils/validation";
+import { Form } from "@/components/form/FormUI";
 
 const inputBase =
   "block w-full h-[34px] px-[14px] py-[6px] text-[14px] leading-[14px] text-ac-ink bg-white border border-solid rounded-none placeholder:text-[rgba(33,37,41,0.65)] focus:outline-0 focus:border-[#86b7fe] focus:shadow-[0_0_0_0.25rem_rgba(13,110,253,0.25)] transition-[border-color,box-shadow] duration-150";
@@ -264,7 +265,7 @@ export default function SubscriptionBenefitsPage() {
                   <div className="lg:col-span-8">
                     {/* VIN Search */}
                     {searchError ? <p className="mb-3 text-[13px] text-ac-danger">{searchError}</p> : null}
-                    <form method="post" noValidate onSubmit={onVinSubmit} className="mb-6">
+                    <Form method="post" noValidate onSubmit={onVinSubmit} className="mb-6">
                       <div className="mb-2 flex items-center justify-between">
                         <span className="text-[16px] font-bold text-ac-ink">Search by VIN</span>
                         <Link
@@ -299,7 +300,7 @@ export default function SubscriptionBenefitsPage() {
                           Get Report
                         </button>
                       </div>
-                    </form>
+                    </Form>
 
                     {/* OR divider */}
                     <div className="flex items-center my-4 text-[16px] font-bold italic text-ac-or-gray">
@@ -310,7 +311,7 @@ export default function SubscriptionBenefitsPage() {
                     </div>
 
                     {/* Plate Search */}
-                    <form method="post" noValidate onSubmit={onPlateSubmit} className="mb-4">
+                    <Form method="post" noValidate onSubmit={onPlateSubmit} className="mb-4">
                       <div className="mb-2 flex items-center justify-between">
                         <span className="text-[16px] font-bold text-ac-ink">
                           Search by Rwanda License Plate
@@ -338,7 +339,7 @@ export default function SubscriptionBenefitsPage() {
                           Get Report
                         </button>
                       </div>
-                    </form>
+                    </Form>
                   </div>
 
                   <div className="lg:col-span-4 flex flex-col items-center justify-center border-t lg:border-t-0 lg:border-l border-[#e2e8f0] pt-6 lg:pt-0 lg:pl-8 text-center">

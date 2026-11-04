@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
 import { AppShell, Alert, PageHeading, fieldClass } from "@/components/ui";
+import { Form } from "@/components/form/FormUI";
 
 type Step = "EMAIL" | "OTP_PASSWORD" | "SUCCESS";
 
@@ -153,7 +154,7 @@ export default function ForgotPasswordOtpPage() {
           <div className="p-6">
             {/* STEP 1: Request OTP Form */}
             {step === "EMAIL" && (
-              <form method="post" onSubmit={handleRequestOtp} className="space-y-4">
+              <Form method="post" onSubmit={handleRequestOtp} className="space-y-4">
                 {error ? <Alert>{error}</Alert> : null}
 
                 <div>
@@ -190,12 +191,12 @@ export default function ForgotPasswordOtpPage() {
                     &larr; Back to Sign In
                   </Link>
                 </div>
-              </form>
+              </Form>
             )}
 
             {/* STEP 2: Enter OTP & New Password */}
             {step === "OTP_PASSWORD" && (
-              <form method="post" onSubmit={handleResetPassword} className="space-y-4">
+              <Form method="post" onSubmit={handleResetPassword} className="space-y-4">
                 {successNote ? <Alert tone="ok">{successNote}</Alert> : null}
                 {error ? <Alert>{error}</Alert> : null}
 
@@ -324,7 +325,7 @@ export default function ForgotPasswordOtpPage() {
                     Cancel
                   </Link>
                 </div>
-              </form>
+              </Form>
             )}
 
             {/* STEP 3: Success Screen */}

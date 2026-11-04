@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { Panel, StatusBadge } from "@/components/dashboard/kit";
+import { fieldClass } from "@/components/ui";
 
-export const profileFieldClass =
-  "h-10 w-full rounded-lg border border-solid border-[#d5e0e0] bg-white px-3 text-[14px] text-ac-ink outline-none focus:border-ac-navy";
+export const profileFieldClass = `${fieldClass} h-10`;
 
 export function ProfileLayout({
   name,
@@ -44,8 +44,8 @@ export function ProfileLayout({
 
 export function FieldLabel({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-[#7a8686]">{label}</span>
+    <label className="ac-form-field">
+      <span className="ac-form-field__label">{label}</span>
       {children}
     </label>
   );

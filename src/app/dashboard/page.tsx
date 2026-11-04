@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { CarFront, ChevronRight } from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DataTable } from "@/components/DataTable";
 import { BarChart, DashboardSkeleton, MixChart, StatGrid } from "@/components/dashboard/OverviewCharts";
@@ -64,6 +66,23 @@ function DashboardBody() {
       <div className="space-y-5">
         {loading ? <DashboardSkeleton /> : null}
         {error ? <Alert>{error}</Alert> : null}
+        <Link
+          href="/dashboard/my-vehicles#claim-vehicle"
+          className="flex items-center justify-between gap-4 rounded-xl border border-solid border-[#cfe0df] bg-white px-4 py-4 text-ac-navy no-underline shadow-sm transition hover:border-ac-blue hover:shadow-md sm:px-5"
+        >
+          <span className="flex min-w-0 items-center gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#e8f3f2] text-ac-blue">
+              <CarFront size={22} aria-hidden="true" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[15px] font-bold">Is this vehicle yours?</span>
+              <span className="block text-[13px] text-[#667]">Submit an ownership claim and proof to link it to your account.</span>
+            </span>
+          </span>
+          <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-ac-blue">
+            Claim a vehicle <ChevronRight size={17} aria-hidden="true" />
+          </span>
+        </Link>
         {!loading ? (
           <>
             <StatGrid

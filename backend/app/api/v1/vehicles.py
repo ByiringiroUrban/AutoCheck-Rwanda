@@ -45,12 +45,12 @@ async def search_vehicle(
 async def create_vehicle(
     vehicle_in: VehicleCreate,
     request: Request,
-    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "DEALER", "ADMIN", "SUPER_ADMIN", "OWNER"])),
+    current_user: UserResponse = Depends(require_role(["GARAGE_MANAGER", "DEALER", "ADMIN", "SUPER_ADMIN"])),
     db: Prisma = Depends(get_db)
 ):
     """
     Create canonical vehicle identity.
-    Accessible to authorized roles (Garages, Dealers, Admins, and Owners).
+    Accessible to garage managers, dealers, and platform administrators.
     """
     service = VehicleService(db)
     vehicle = await service.create_vehicle(vehicle_in)

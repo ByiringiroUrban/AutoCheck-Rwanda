@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
 import { validatePlate, validateVin } from "@/utils/validation";
+import { Form } from "@/components/form/FormUI";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -232,7 +233,7 @@ export default function VehicleHistoryReportsPage() {
                     </p>
 
                     {/* VIN Search */}
-                    <form method="post" noValidate onSubmit={onVinSubmit} className="mb-6">
+                    <Form method="post" noValidate onSubmit={onVinSubmit} className="mb-6">
                       <div className="mb-2 flex items-center justify-between">
                         <span className="text-[16px] font-bold text-ac-ink">Search by VIN</span>
                         <Link
@@ -268,7 +269,7 @@ export default function VehicleHistoryReportsPage() {
                           Get Report
                         </button>
                       </div>
-                    </form>
+                    </Form>
 
                     {/* OR divider */}
                     <div className="flex items-center my-4 text-[16px] font-bold italic text-ac-or-gray">
@@ -279,7 +280,7 @@ export default function VehicleHistoryReportsPage() {
                     </div>
 
                     {/* Rwanda License Plate Search */}
-                    <form method="post" noValidate onSubmit={onPlateSubmit} className="mb-4">
+                    <Form method="post" noValidate onSubmit={onPlateSubmit} className="mb-4">
                       <div className="mb-2 flex items-center justify-between">
                         <span className="text-[16px] font-bold text-ac-ink">
                           Search by Rwanda License Plate
@@ -329,7 +330,7 @@ export default function VehicleHistoryReportsPage() {
                           Get Report
                         </button>
                       </div>
-                    </form>
+                    </Form>
 
                     <div className="mt-6 border-t border-[#ddd] pt-3 text-[11px] leading-[16px] text-gray-500">
                       This site is protected by reCAPTCHA and the Google{" "}

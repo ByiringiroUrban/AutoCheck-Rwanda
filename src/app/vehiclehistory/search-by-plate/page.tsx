@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Form } from "@/components/form/FormUI";
 
 export const metadata: Metadata = {
   title: "Search by Rwanda License Plate | AutoCheck Rwanda",
@@ -30,7 +31,7 @@ export default function SearchByPlatePage() {
               <h2 className="text-xl font-bold text-ac-blue mb-4">
                 Enter Rwanda Plate Number
               </h2>
-              <form action="/vehiclehistory/vehicle-history-reports#search-reports" method="GET" className="space-y-4">
+              <Form action="/vehiclehistory/vehicle-history-reports#search-reports" method="GET" className="space-y-4">
                 <div>
                   <label htmlFor="plate-input" className="block text-[14px] font-semibold text-ac-ink mb-1">
                     Plate Number
@@ -79,7 +80,7 @@ export default function SearchByPlatePage() {
                     Look Up Plate History
                   </button>
                 </div>
-              </form>
+              </Form>
             </div>
 
             {/* Information Sidebar */}

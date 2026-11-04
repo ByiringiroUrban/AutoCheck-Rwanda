@@ -4,8 +4,9 @@ datasource db {
 }
 
 generator client {
-  provider  = "prisma-client-py"
-  interface = "asyncio"
+  provider      = "prisma-client-py"
+  interface     = "asyncio"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
 }
 
 enum Role {
@@ -34,6 +35,11 @@ enum OrgStatus {
   APPROVED
   REJECTED
   SUSPENDED
+}
+
+enum ApplicantType {
+  INDIVIDUAL
+  ORGANIZATION
 }
 
 enum OrgMemberRole {
@@ -172,17 +178,18 @@ model User {
 }
 
 model Organization {
-  id         String     @id @default(uuid())
-  type       OrgType    @default(GARAGE)
-  name       String
-  tin        String     @unique
-  location   String
-  email      String
-  phone      String
-  logo_url   String?
-  status     OrgStatus  @default(PENDING)
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
+  id              String         @id @default(uuid())
+  type            OrgType        @default(GARAGE)
+  applicant_type  ApplicantType  @default(ORGANIZATION)
+  name            String
+  tin             String?        @unique
+  location        String?
+  email           String
+  phone           String
+  logo_url        String?
+  status          OrgStatus      @default(PENDING)
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
 
   members         OrganizationMember[]
   service_records ServiceRecord[]

@@ -11,24 +11,29 @@ db = Prisma(auto_register=True)
 _connection_attempted = False
 
 
+def _database_disabled() -> bool:
+    return "ep-sample-123456" in settings.DATABASE_URL or settings.ENVIRONMENT == "test"
+
+
 async def connect_db() -> Prisma:
     """Connects to the Neon PostgreSQL database via Prisma with timeout safety."""
     global _connection_attempted
-    if not db.is_connected() and not _connection_attempted:
+    if db.is_connected() or _connection_attempted:
+        return db
+    if _database_disabled():
+        logger.info("Using placeholder or test configuration; database connection skipped.")
         _connection_attempted = True
-        # Check if placeholder URL
-        if "ep-sample-123456" in settings.DATABASE_URL or settings.ENVIRONMENT == "test":
-            logger.info("Using placeholder or test configuration; database connection skipped.")
-            return db
+        return db
 
-        try:
-            logger.info("Connecting to Neon PostgreSQL...")
-            await asyncio.wait_for(db.connect(), timeout=20.0)
-            logger.info("Successfully connected to Neon PostgreSQL.")
-        except asyncio.TimeoutError:
-            logger.warning("Database connection timed out. Operating in standalone mode.")
-        except Exception as e:
-            logger.warning(f"Failed to connect to primary database ({e}). Operating in standalone mode.")
+    try:
+        logger.info("Connecting to Neon PostgreSQL...")
+        await asyncio.wait_for(db.connect(), timeout=20.0)
+        _connection_attempted = True
+        logger.info("Successfully connected to Neon PostgreSQL.")
+    except asyncio.TimeoutError:
+        logger.warning("Database connection timed out. Will retry on the next request.")
+    except Exception as e:
+        logger.warning(f"Failed to connect to primary database ({e}). Will retry on the next request.")
     return db
 
 
@@ -45,7 +50,7 @@ async def disconnect_db() -> None:
 
 async def get_db() -> Prisma:
     """Dependency provider for FastAPI route endpoints."""
-    if not db.is_connected() and not _connection_attempted:
+    if not db.is_connected():
         await connect_db()
     return db
 

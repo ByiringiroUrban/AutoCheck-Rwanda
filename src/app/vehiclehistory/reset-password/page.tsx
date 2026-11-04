@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
 import { AppShell, Alert, PageHeading, fieldClass } from "@/components/ui";
+import { Form } from "@/components/form/FormUI";
 
 function ResetPasswordOtpContent() {
   const searchParams = useSearchParams();
@@ -139,7 +140,7 @@ function ResetPasswordOtpContent() {
         </div>
 
         <div className="p-6">
-          <form method="post" onSubmit={onSubmit} className="space-y-4">
+          <Form method="post" onSubmit={onSubmit} className="space-y-4">
             {successNote ? <Alert tone="ok">{successNote}</Alert> : null}
             {error ? <Alert>{error}</Alert> : null}
 
@@ -269,7 +270,7 @@ function ResetPasswordOtpContent() {
                 &larr; Back to Sign In
               </Link>
             </div>
-          </form>
+          </Form>
         </div>
       </div>
     </div>

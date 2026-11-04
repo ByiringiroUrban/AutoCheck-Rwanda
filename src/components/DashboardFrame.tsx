@@ -134,11 +134,15 @@ export function DashboardFrame({
   }, [menu]);
 
   return (
-    <div className="min-h-screen bg-[#eef3f3] text-ac-ink">
+    <div className="dashboard-shell min-h-screen text-ac-ink">
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-hidden bg-[#8c2f0a] text-white ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-hidden bg-[#8c2f0a] bg-cover bg-center text-white ${
           open ? "flex" : "hidden"
         } md:flex`}
+        style={{
+          backgroundImage:
+            "linear-gradient(180deg, rgba(91, 30, 6, 0.62), rgba(91, 30, 6, 0.82)), url('https://i.pinimg.com/736x/3a/29/82/3a298211467ef2075bb484b2fea222c2.jpg')",
+        }}
       >
         <Car aria-hidden size={168} strokeWidth={1.2} className="pointer-events-none absolute bottom-32 left-1/2 z-0 -translate-x-1/2 rotate-[-12deg] text-white/20" />
         <div className="relative z-10 flex h-16 shrink-0 items-center border-b border-solid border-white/20 px-4">
@@ -256,7 +260,7 @@ export function DashboardFrame({
         <button type="button" aria-label="Close sidebar" className="fixed inset-0 z-30 bg-black/40 md:hidden" onClick={() => setOpen(false)} />
       ) : null}
 
-      <header className="fixed inset-x-0 top-0 z-20 flex h-16 items-center justify-between border-b border-solid border-[#e3ebeb] bg-white px-3 md:left-64 md:px-6">
+      <header className="dashboard-header fixed inset-x-0 top-0 z-20 flex h-16 items-center justify-between px-3 md:left-64 md:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"
@@ -337,7 +341,7 @@ export function DashboardFrame({
         ) : null}
       </header>
 
-      <main className="min-h-screen pt-16 md:pl-64">
+      <main className="dashboard-main min-h-screen pt-16 md:pl-64">
         <div className="px-4 py-5 md:px-6">{children}</div>
       </main>
     </div>

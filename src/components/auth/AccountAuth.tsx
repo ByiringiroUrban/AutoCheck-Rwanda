@@ -6,6 +6,7 @@ import { ApiError } from "@/services/api";
 import { Alert, fieldClass } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
 import { homeForRole } from "@/utils/roles";
+import { Form } from "@/components/form/FormUI";
 
 const input = fieldClass;
 
@@ -88,7 +89,7 @@ export function AccountAuth() {
                 <h2 className="m-0 text-[18px] font-bold text-white">Returning Subscriber? Sign in now.</h2>
               </div>
               <div className="p-6">
-                <form method="post" action="/vehiclehistory/login" onSubmit={onSignIn}>
+                <Form method="post" action="/vehiclehistory/login" onSubmit={onSignIn}>
                   <label className="mb-[5px] block text-[12px] font-semibold uppercase tracking-wide text-[#555]" htmlFor="signin-email">
                     E-mail
                   </label>
@@ -115,7 +116,7 @@ export function AccountAuth() {
                       Unable to Sign in? Reset Your Password »
                     </a>
                   </div>
-                </form>
+                </Form>
               </div>
             </div>
           </div>
@@ -126,7 +127,7 @@ export function AccountAuth() {
                 <h2 className="m-0 text-[18px] font-bold text-white">New to AutoCheck? Create an account.</h2>
               </div>
               <div className="p-6">
-                <form method="post" action="/vehiclehistory/login" onSubmit={onRegister}>
+                <Form method="post" action="/vehiclehistory/login" onSubmit={onRegister}>
                   <div className="mb-4 flex flex-wrap mx-[-6px]">
                     <div className="w-1/2 px-[6px]">
                       <label className="mb-[5px] block text-[12px] font-semibold uppercase text-[#555]" htmlFor="reg-firstname">
@@ -180,7 +181,7 @@ export function AccountAuth() {
                   <button type="submit" className="ac-btn h-[38px] px-6" disabled={pending === "up"}>
                     {pending === "up" ? "Creating account…" : "Create Account"}
                   </button>
-                </form>
+                </Form>
               </div>
             </div>
           </div>

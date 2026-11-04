@@ -219,3 +219,10 @@ export function downloadReportPdf(report: Report, mileage: MileageHistory | null
   link.remove();
   URL.revokeObjectURL(url);
 }
+
+export function printReportPdf() {
+  const cleanup = () => document.body.classList.remove("ac-report-printing");
+  document.body.classList.add("ac-report-printing");
+  window.addEventListener("afterprint", cleanup, { once: true });
+  window.print();
+}

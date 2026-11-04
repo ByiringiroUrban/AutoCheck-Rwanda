@@ -89,19 +89,21 @@ function MyVehiclesBody() {
             </article>
           ))}
         </div>
-        <PendingForm onSubmit={onClaim} className="max-w-xl space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-5 shadow-sm">
-          <h2 className="m-0 text-[18px] font-bold">Claim a vehicle</h2>
-          <p className="text-[13px] text-[#666]">
-            Search by VIN, then attach a photo of the yellow card. The API stores the claim against the vehicle id and the evidence URL.
-          </p>
-          <input name="vin" value={vin} onChange={(event) => setVin(event.target.value)} required maxLength={17} className={fieldClass} placeholder="VIN" />
-          <input name="plate" className={fieldClass} placeholder="Plate (for your notes)" />
-          <label className="block text-[13px] font-semibold">
-            Proof of ownership
-            <input name="proof" type="file" accept="image/jpeg,image/png,image/webp" className="mt-1 block text-[13px] font-normal" />
-          </label>
-          <SubmitButton busyLabel="Submitting…">Submit claim</SubmitButton>
-        </PendingForm>
+        <section id="claim-vehicle" className="scroll-mt-20">
+          <PendingForm onSubmit={onClaim} className="max-w-xl space-y-3 rounded-[8px] border border-solid border-[#ddd] bg-white p-5 shadow-sm">
+            <h2 className="m-0 text-[18px] font-bold">Claim a vehicle</h2>
+            <p className="text-[13px] text-[#666]">
+              Search by VIN, then attach a photo of the yellow card. The API stores the claim against the vehicle id and the evidence URL.
+            </p>
+            <input name="vin" value={vin} onChange={(event) => setVin(event.target.value)} required maxLength={17} className={fieldClass} placeholder="VIN" />
+            <input name="plate" className={fieldClass} placeholder="Plate (for your notes)" />
+            <label className="block text-[13px] font-semibold">
+              Proof of ownership
+              <input name="proof" type="file" accept="image/jpeg,image/png,image/webp" className="mt-1 block text-[13px] font-normal" />
+            </label>
+            <SubmitButton busyLabel="Submitting…">Submit claim</SubmitButton>
+          </PendingForm>
+        </section>
       </div>
     </DashboardFrame>
   );

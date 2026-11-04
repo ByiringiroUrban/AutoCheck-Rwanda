@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Download } from "lucide-react";
+import { Printer } from "lucide-react";
 import { Alert, Spinner } from "@/components/ui";
 import { ReportSheet } from "@/components/report/ReportSheet";
-import { downloadReportPdf } from "@/components/report/reportPdf";
+import { printReportPdf } from "@/components/report/reportPdf";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
 import type { MileageHistory, Report } from "@/types/api";
@@ -40,17 +40,17 @@ export default function ReportPage() {
   }, [params.id]);
 
   return (
-    <div className="min-h-screen bg-[#f2f2f2] py-6">
+    <div className="ac-report-print-root min-h-screen bg-[#f2f2f2] py-6">
       <div className="mx-auto max-w-[980px] px-3">
-        <div className="mb-3 flex justify-end">
+        <div className="ac-report-no-print mb-3 flex justify-end">
           <button
             type="button"
             className="ac-btn inline-flex items-center gap-2 px-4"
             disabled={!report?.snapshot?.vehicle}
-            onClick={() => report && downloadReportPdf(report, mileage)}
+            onClick={printReportPdf}
           >
-            <Download size={15} />
-            Download PDF
+            <Printer size={15} />
+            Print / Save PDF
           </button>
         </div>
         {!report && !error ? <Spinner label="Loading report…" /> : null}

@@ -24,6 +24,7 @@ class ScoreBreakdown(BaseModel):
 
 class VehicleReportSnapshot(BaseModel):
     vehicle: VehicleResponse
+    vehicle_image_url: Optional[str] = None
     current_plate: Optional[str] = None
     plate_history: List[Dict[str, Any]] = []
     ownership_count: int = 0

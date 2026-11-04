@@ -8,11 +8,11 @@ import { Alert } from "@/components/ui";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
 import type { Organization } from "@/types/api";
-import { ADMIN_ROLES } from "@/utils/roles";
+import { PLATFORM_ROLES } from "@/utils/roles";
 
 export default function AdminOrganizationsPage() {
   return (
-    <ProtectedRoute allow={ADMIN_ROLES}>
+    <ProtectedRoute allow={PLATFORM_ROLES}>
       <Orgs />
     </ProtectedRoute>
   );
@@ -43,13 +43,23 @@ function Orgs() {
       <DataTable
         rows={rows}
         empty="No organizations are waiting for approval."
-        getSearchText={(row) => `${row.name} ${row.tin} ${row.type} ${row.location}`}
+        getSearchText={(row) => `${row.name} ${row.tin || ""} ${row.type} ${row.applicant_type} ${row.location || ""} ${row.email} ${row.phone}`}
         columns={
           [
-            { key: "name", header: "Name", render: (row) => row.name },
+            { key: "name", header: "Applicant / organization", render: (row) => row.name },
             { key: "type", header: "Type", render: (row) => row.type },
-            { key: "tin", header: "TIN", render: (row) => row.tin },
-            { key: "where", header: "Location", render: (row) => row.location },
+            {
+              key: "applicant_type",
+              header: "Applicant type",
+              render: (row) => row.applicant_type === "INDIVIDUAL" ? "Individual" : "Organization",
+            },
+            { key: "tin", header: "TIN", render: (row) => row.tin || "—" },
+            { key: "where", header: "Location", render: (row) => row.location || "—" },
+            {
+              key: "contact",
+              header: "Contact",
+              render: (row) => <span>{row.email}<br />{row.phone}</span>,
+            },
             { key: "status", header: "Status", render: (row) => row.status },
           ] as Column<Organization>[]
         }

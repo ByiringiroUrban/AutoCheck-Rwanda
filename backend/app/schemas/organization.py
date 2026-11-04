@@ -1,16 +1,33 @@
 from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, model_validator
 from app.schemas.auth import UserResponse
 
 
 class OrganizationCreate(BaseModel):
-    name: str = Field(..., min_length=2)
+    name: Optional[str] = Field(None, min_length=2)
     type: str = "GARAGE"  # GARAGE, DEALER
-    tin: str = Field(..., min_length=5, description="Tax Identification Number")
-    location: str = Field(..., min_length=2)
-    email: EmailStr
-    phone: str = Field(..., min_length=6)
+    applicant_type: str = "ORGANIZATION"
+    tin: Optional[str] = Field(None, min_length=5, description="Tax Identification Number")
+    location: Optional[str] = Field(None, min_length=2)
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = Field(None, min_length=6)
+
+    @model_validator(mode="after")
+    def validate_application(self):
+        organization_type = self.type.upper()
+        applicant_type = self.applicant_type.upper()
+
+        if organization_type not in {"GARAGE", "DEALER"}:
+            raise ValueError("Application type must be GARAGE or DEALER.")
+        if applicant_type not in {"INDIVIDUAL", "ORGANIZATION"}:
+            raise ValueError("Applicant type must be INDIVIDUAL or ORGANIZATION.")
+        if organization_type == "GARAGE" and applicant_type != "ORGANIZATION":
+            raise ValueError("Garage applications must be submitted by an organization.")
+        if organization_type == "GARAGE" or applicant_type == "ORGANIZATION":
+            if not self.name or not self.tin or not self.location or not self.email or not self.phone:
+                raise ValueError("Organization applications require a name, TIN, location, email, and phone.")
+        return self
 
 
 class OrganizationStatusUpdate(BaseModel):
@@ -65,8 +82,9 @@ class OrganizationResponse(BaseModel):
     id: str
     name: str
     type: str
-    tin: str
-    location: str
+    applicant_type: str
+    tin: Optional[str] = None
+    location: Optional[str] = None
     email: str
     phone: str
     status: str

@@ -22,7 +22,7 @@ router = APIRouter(tags=["Inspections"])
 async def create_inspection(
     insp_in: InspectionCreate,
     request: Request,
-    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "ADMIN", "SUPER_ADMIN"])),
+    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "DEALER", "ADMIN", "SUPER_ADMIN"])),
     db: Prisma = Depends(get_db)
 ):
     """Create structured vehicle inspection."""
@@ -49,7 +49,7 @@ async def create_inspection(
 async def add_inspection_item(
     id: str,
     item_in: InspectionItemCreate,
-    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "ADMIN", "SUPER_ADMIN"])),
+    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "DEALER", "ADMIN", "SUPER_ADMIN"])),
     db: Prisma = Depends(get_db)
 ):
     """Add structured checklist item finding to an inspection."""
@@ -62,7 +62,7 @@ async def complete_inspection(
     id: str,
     complete_in: InspectionComplete,
     request: Request,
-    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "ADMIN", "SUPER_ADMIN"])),
+    current_user: UserResponse = Depends(require_role(["GARAGE_STAFF", "GARAGE_MANAGER", "DEALER", "ADMIN", "SUPER_ADMIN"])),
     db: Prisma = Depends(get_db)
 ):
     """Finalize and complete an inspection."""

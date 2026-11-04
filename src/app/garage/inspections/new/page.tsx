@@ -9,7 +9,7 @@ import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
 import { lookupVehicle } from "@/hooks/useVehicleSearch";
 import type { Vehicle } from "@/types/api";
-import { STAFF_ROLES } from "@/utils/roles";
+import { GARAGE_ROLES } from "@/utils/roles";
 import { validateMileage } from "@/utils/validation";
 
 const ITEMS = [
@@ -24,7 +24,7 @@ const ITEMS = [
 
 export default function NewInspectionPage() {
   return (
-    <ProtectedRoute allow={STAFF_ROLES}>
+    <ProtectedRoute allow={GARAGE_ROLES}>
       <InspectionForm />
     </ProtectedRoute>
   );

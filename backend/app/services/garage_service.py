@@ -10,7 +10,12 @@ from app.schemas.organization import (
     OrganizationMemberResponse,
 )
 from app.core.security import get_password_hash
-from app.utils.exceptions import NotFoundException, ConflictException, BadRequestException, ForbiddenException
+from app.utils.exceptions import (
+    BadRequestException,
+    ConflictException,
+    ForbiddenException,
+    NotFoundException,
+)
 
 
 class GarageService:
@@ -18,19 +23,40 @@ class GarageService:
         self.db = db
 
     async def submit_application(self, user_id: str, app_in: OrganizationCreate) -> OrganizationResponse:
-        # Check TIN uniqueness
-        existing_tin = await self.db.organization.find_unique(where={"tin": app_in.tin.strip()})
-        if existing_tin:
-            raise ConflictException(f"Organization with TIN '{app_in.tin}' is already registered.")
+        applicant = await self.db.user.find_unique(where={"id": user_id})
+        if not applicant:
+            raise NotFoundException("User", user_id)
+
+        organization_type = app_in.type.upper()
+        applicant_type = app_in.applicant_type.upper()
+        tin = app_in.tin.strip() if app_in.tin else None
+        location = app_in.location.strip() if app_in.location else None
+        name = app_in.name.strip() if app_in.name else None
+
+        if tin:
+            existing_tin = await self.db.organization.find_unique(where={"tin": tin})
+            if existing_tin:
+                raise ConflictException(f"Organization with TIN '{tin}' is already registered.")
+
+        if organization_type == "DEALER" and applicant_type == "INDIVIDUAL":
+            name = f"{applicant.first_name} {applicant.last_name}".strip()
+            tin = None
+            location = None
+
+        email = str(app_in.email or applicant.email).lower()
+        phone = (app_in.phone or applicant.phone or "").strip()
+        if not phone:
+            raise BadRequestException("A contact phone number is required for the application.")
 
         org = await self.db.organization.create(
             data={
-                "name": app_in.name.strip(),
-                "type": app_in.type.upper(),  # type: ignore
-                "tin": app_in.tin.strip(),
-                "location": app_in.location.strip(),
-                "email": app_in.email.lower(),
-                "phone": app_in.phone.strip(),
+                "name": name,
+                "type": organization_type,  # type: ignore
+                "applicant_type": applicant_type,  # type: ignore
+                "tin": tin,
+                "location": location,
+                "email": email,
+                "phone": phone,
                 "status": "PENDING",  # type: ignore
             }
         )
@@ -87,6 +113,19 @@ class GarageService:
             data={"status": status_val},  # type: ignore
             include={"members": {"include": {"user": True}}},
         )
+
+        if status_val == "APPROVED" and org.type == "DEALER":
+            applicant_members = await self.db.organizationmember.find_many(
+                where={"organization_id": org_id, "role": "OWNER", "status": "ACTIVE"},
+                include={"user": True},
+            )
+            for member in applicant_members:
+                if member.user and member.user.role not in {"ADMIN", "SUPER_ADMIN", "DEALER"}:
+                    await self.db.user.update(
+                        where={"id": member.user.id},
+                        data={"role": "DEALER"},
+                    )
+
         return OrganizationResponse.model_validate(updated)
 
     async def invite_staff(self, org_id: str, invite_in: StaffInvite) -> OrganizationMemberResponse:

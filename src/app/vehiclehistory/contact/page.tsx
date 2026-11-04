@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import type { Metadata } from "next";
+import { Form } from "@/components/form/FormUI";
 
 export const metadata: Metadata = {
   title: "Contact Us | AutoCheck Rwanda",
@@ -48,7 +49,7 @@ export default function ContactPage() {
                   and we&apos;ll get back to you as quickly as we can.
                 </p>
 
-                <form id="contact-form" noValidate>
+                <Form id="contact-form" noValidate>
                   {/* Topic */}
                   <div className="mb-[18px]">
                     <label htmlFor="contact-topic" className="block mb-[6px] text-[13px] font-semibold text-[#444]">
@@ -145,7 +146,7 @@ export default function ContactPage() {
                   >
                     Submit Question
                   </button>
-                </form>
+                </Form>
               </div>
 
               {/* Direct contact info */}

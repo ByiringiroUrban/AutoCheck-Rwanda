@@ -86,7 +86,7 @@ prisma generate --schema=prisma/schema.prisma
 
 ### 5. Start the API Server
 ```bash
-uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 ```
 Open interactive Swagger documentation at: **[http://localhost:8000/docs](http://localhost:8000/docs)**  
 Alternative ReDoc documentation at: **[http://localhost:8000/redoc](http://localhost:8000/redoc)**
@@ -137,6 +137,8 @@ pytest -v
 - `PATCH /api/v1/garages/staff/{id}` - Update staff role/status
 - `GET  /api/v1/garages/pending` - Admin approval queue
 - `PATCH /api/v1/garages/{id}/status` - Admin approve/reject garage
+
+Dealer applicants must sign in and can apply as an individual or provide organization details. Organization details are optional for individual applicants; approved dealer applications grant dealer access to the applicant's account.
 
 ### 5. Service & Maintenance (`/api/v1/service-records`)
 - `POST /api/v1/service-records` - Record maintenance/repair event (auto-records mileage)

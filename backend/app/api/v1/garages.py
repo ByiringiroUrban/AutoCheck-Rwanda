@@ -38,7 +38,12 @@ async def submit_garage_application(
         action="GARAGE_APPLICATION_SUBMITTED",
         entity_type="ORGANIZATION",
         entity_id=org.id,
-        metadata={"tin": org.tin, "name": org.name},
+        metadata={
+            "type": org.type,
+            "applicant_type": org.applicant_type,
+            "tin": org.tin,
+            "name": org.name,
+        },
         ip_address=request.client.host if request.client else None
     )
     return org

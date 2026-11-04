@@ -134,12 +134,13 @@ export const endpoints = {
   myVehicles: () => api<Ownership[]>("/api/v1/ownership/my-vehicles"),
 
   applyOrganization: (body: {
-    name: string;
+    name?: string;
     type: string;
-    tin: string;
-    location: string;
-    email: string;
-    phone: string;
+    applicant_type?: "INDIVIDUAL" | "ORGANIZATION";
+    tin?: string;
+    location?: string;
+    email?: string;
+    phone?: string;
   }) =>
     api<Organization>("/api/v1/garages/applications", { method: "POST", json: body, skipAuthRedirect: true }),
 

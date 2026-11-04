@@ -184,6 +184,7 @@ export interface ScoreBreakdown {
 
 export interface ReportSnapshot {
   vehicle: Vehicle;
+  vehicle_image_url?: string | null;
   current_plate?: string | null;
   plate_history?: Record<string, unknown>[];
   ownership_count: number;
@@ -238,8 +239,9 @@ export interface Organization {
   id: string;
   name: string;
   type: string;
-  tin: string;
-  location: string;
+  applicant_type: "INDIVIDUAL" | "ORGANIZATION";
+  tin?: string | null;
+  location?: string | null;
   email: string;
   phone: string;
   logo_url?: string | null;
@@ -318,4 +320,3 @@ export interface CloudinaryUploadResponse {
   height?: number;
   resource_type?: string;
 }
-

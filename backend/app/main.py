@@ -1,16 +1,15 @@
-import os
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pathlib import Path
 
 from app.core.config import settings
 from app.db.session import connect_db, disconnect_db
 from app.api.v1.api import api_router
 from app.utils.exceptions import AppException
+from app.utils.file_storage import ensure_upload_dir
 
 # Configure logging
 logging.basicConfig(
@@ -25,9 +24,7 @@ async def lifespan(app: FastAPI):
     logger.info("Initializing AutoCheck Rwanda Backend...")
     # Connect database
     await connect_db()
-    # Ensure upload directory exists
-    upload_path = Path(settings.UPLOAD_DIR)
-    upload_path.mkdir(parents=True, exist_ok=True)
+    ensure_upload_dir()
     yield
     logger.info("Shutting down AutoCheck Rwanda Backend...")
     await disconnect_db()
@@ -58,6 +55,7 @@ The backend platform for vehicle provenance, verified maintenance records, Rwand
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS if settings.CORS_ORIGINS else ["*"],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -91,8 +89,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 
 
 # Mount static files for uploads
-uploads_dir = Path(settings.UPLOAD_DIR)
-uploads_dir.mkdir(parents=True, exist_ok=True)
+uploads_dir = ensure_upload_dir()
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 # Include API v1 Router

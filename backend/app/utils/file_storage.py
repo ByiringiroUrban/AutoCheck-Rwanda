@@ -13,9 +13,22 @@ ALLOWED_DOCUMENT_EXTENSIONS: Set[str] = {".pdf", ".jpg", ".jpeg", ".png"}
 
 
 def ensure_upload_dir() -> Path:
-    upload_path = Path(settings.UPLOAD_DIR)
-    upload_path.mkdir(parents=True, exist_ok=True)
-    return upload_path
+    """Create the upload folder, falling back to /tmp when the disk is read-only."""
+    candidates = [Path(settings.UPLOAD_DIR), Path("/tmp/uploads")]
+    seen: set[str] = set()
+    for upload_path in candidates:
+        key = str(upload_path)
+        if key in seen:
+            continue
+        seen.add(key)
+        try:
+            upload_path.mkdir(parents=True, exist_ok=True)
+            return upload_path
+        except OSError:
+            continue
+    fallback = Path("/tmp/uploads")
+    fallback.mkdir(parents=True, exist_ok=True)
+    return fallback
 
 
 async def save_uploaded_file(file: UploadFile, subfolder: str = "images") -> Tuple[str, str]:

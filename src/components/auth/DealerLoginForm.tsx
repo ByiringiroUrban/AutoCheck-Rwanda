@@ -6,6 +6,7 @@ import { ApiError } from "@/services/api";
 import { Alert } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
 import { homeForRole } from "@/utils/roles";
+import { Form } from "@/components/form/FormUI";
 
 export function DealerLoginForm() {
   const { login } = useAuth();
@@ -29,7 +30,7 @@ export function DealerLoginForm() {
   };
 
   return (
-    <form method="post" action="/vehiclehistory/dealer-login" noValidate onSubmit={onSubmit}>
+    <Form method="post" action="/vehiclehistory/dealer-login" noValidate onSubmit={onSubmit}>
       <div className="mb-[18px]">
         <label htmlFor="dealer-email" className="mb-[6px] block text-[13px] font-semibold text-[#444]">
           Email Address
@@ -69,6 +70,6 @@ export function DealerLoginForm() {
       <button type="submit" className="ac-btn h-[44px] w-full text-[15px] font-semibold" disabled={pending}>
         {pending ? "Signing in…" : "Sign In"}
       </button>
-    </form>
+    </Form>
   );
 }
