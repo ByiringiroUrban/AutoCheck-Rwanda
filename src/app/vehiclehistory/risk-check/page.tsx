@@ -25,7 +25,7 @@ export default function RiskCheckPage() {
                 Hidden Flood Damage
               </h2>
               <p className="text-gray-700 mb-4 leading-relaxed">
-                Flood-damaged vehicles are often cleaned up and resold, sometimes crossing borders. Water can severely damage a vehicle's electrical systems, engine, and interior, leading to expensive repairs down the line. Our reports check title brands and other records to identify vehicles that have been reported as flood-damaged.
+                Flood-damaged vehicles are often cleaned up and resold, sometimes crossing borders. Water can severely damage a vehicle&apos;s electrical systems, engine, and interior, leading to expensive repairs down the line. Our reports check title brands and other records to identify vehicles that have been reported as flood-damaged.
               </p>
             </div>
 

@@ -1,7 +1,6 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Vehicle Buyback Protection | AutoCheck Rwanda",
@@ -38,7 +37,7 @@ export default function VehicleBuybackProtectionPage() {
             <div className="space-y-4 text-gray-700">
               <p><strong>1. Qualify:</strong> Ensure the vehicle you are purchasing is eligible for Buyback Protection (check the AutoCheck report).</p>
               <p><strong>2. Register:</strong> You must register for Buyback Protection within the specified timeframe after purchasing the vehicle (subject to Terms and Conditions).</p>
-              <p><strong>3. Claim:</strong> If a covered title brand is later discovered (that wasn't on the original report), you may file a claim.</p>
+              <p><strong>3. Claim:</strong> If a covered title brand is later discovered (that wasn&apos;t on the original report), you may file a claim.</p>
             </div>
 
             <div className="mt-8 text-sm text-gray-500 bg-gray-50 p-4 rounded border border-gray-200">

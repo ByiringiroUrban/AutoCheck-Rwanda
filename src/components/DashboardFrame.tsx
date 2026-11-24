@@ -76,34 +76,39 @@ const GROUP_ICONS: Record<string, LucideIcon> = {
   System: ScrollText,
 };
 
-export function DashboardFrame({
-  title,
-  subtitle,
-  children,
-}: {
+type DashboardFrameProps = {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
-}) {
+};
+
+export function DashboardFrame(props: DashboardFrameProps) {
   const path = usePathname();
+  const { user } = useAuth();
+
+  return <DashboardFrameContent key={`${path}:${user?.role || ""}`} {...props} path={path} />;
+}
+
+function DashboardFrameContent({
+  title,
+  subtitle,
+  children,
+  path,
+}: DashboardFrameProps & { path: string }) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(false);
   const [navigating, setNavigating] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const [openGroups, setOpenGroups] = useState<string[]>([]);
   const menuRef = useRef<HTMLDivElement>(null);
   const groups = groupsForRole(user?.role);
+  const activeGroups = groups
+    .filter((group) => group.links.some((item) => linkIsActive(path, item.href)))
+    .map((group) => group.label);
+  const [openGroups, setOpenGroups] = useState<string[]>(activeGroups);
   const account = accountLinkForRole(user?.role);
   const initials = `${user?.first_name?.[0] || ""}${user?.last_name?.[0] || ""}`.toUpperCase() || "AC";
   const roleLabel = (user?.role || "").replaceAll("_", " ");
-
-  useEffect(() => {
-    setNavigating(false);
-    setOpen(false);
-    const active = groups.filter((group) => group.links.some((item) => linkIsActive(path, item.href))).map((group) => group.label);
-    setOpenGroups((current) => [...new Set([...current, ...active])]);
-  }, [path, user?.role]);
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {

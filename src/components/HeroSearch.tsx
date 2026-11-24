@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
 import { validatePlate, validateVin } from "@/utils/validation";
 import { Form } from "@/components/form/FormUI";
@@ -37,6 +39,7 @@ function HeroVideo() {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export function HeroSearch() {
+  const router = useRouter();
   const [vin, setVin] = useState("");
   const [vinError, setVinError] = useState(false);
   const [plate, setPlate] = useState("");
@@ -54,7 +57,7 @@ export function HeroSearch() {
     setBusy("vin");
     try {
       const vehicle = await lookupVehicle("vin", check.value);
-      window.location.assign(`/search-results?vin=${encodeURIComponent(vehicle.vin)}`);
+      router.push(`/search-results?vin=${encodeURIComponent(vehicle.vin)}`);
     } catch (error) {
       setFormError(friendlySearchError(error));
     } finally {
@@ -72,7 +75,7 @@ export function HeroSearch() {
     setBusy("plate");
     try {
       const vehicle = await lookupVehicle("plate", check.value);
-      window.location.assign(`/search-results?plate=${encodeURIComponent(vehicle.current_plate || check.value)}`);
+      router.push(`/search-results?plate=${encodeURIComponent(vehicle.current_plate || check.value)}`);
     } catch (error) {
       setFormError(friendlySearchError(error));
     } finally {
@@ -213,12 +216,12 @@ export function HeroSearch() {
                   </div>
                   <div className="flex flex-wrap mt-[7px] mb-[3.5px] mx-[-10.5px]">
                     <div className={`${col} w-full`}>
-                      <a
+                      <Link
                         className="novin text-[15px] leading-[22.5px] text-ac-blue"
                         href="/vehiclehistory/vehicle-history-reports"
                       >
                         No VIN? Subscribe now, search later»
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </Form>

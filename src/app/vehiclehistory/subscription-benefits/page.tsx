@@ -11,6 +11,7 @@ import {
 } from "@/components/icons";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { friendlySearchError, lookupVehicle } from "@/hooks/useVehicleSearch";
 import { validatePlate, validateVin } from "@/utils/validation";
@@ -22,6 +23,7 @@ const inputBase =
 const errorText = "mt-[4px] text-[12px] text-ac-danger";
 
 export default function SubscriptionBenefitsPage() {
+  const router = useRouter();
   const [vin, setVin] = useState("");
   const [vinError, setVinError] = useState(false);
   const [plate, setPlate] = useState("");
@@ -40,7 +42,7 @@ export default function SubscriptionBenefitsPage() {
     setVinError(false);
     try {
       const vehicle = await lookupVehicle("vin", check.value);
-      window.location.assign(`/search-results?vin=${encodeURIComponent(vehicle.vin)}`);
+      router.push(`/search-results?vin=${encodeURIComponent(vehicle.vin)}`);
     } catch (error) {
       setSearchError(friendlySearchError(error));
     }
@@ -57,7 +59,7 @@ export default function SubscriptionBenefitsPage() {
     setPlateError(false);
     try {
       const vehicle = await lookupVehicle("plate", check.value);
-      window.location.assign(`/search-results?plate=${encodeURIComponent(vehicle.current_plate || check.value)}`);
+      router.push(`/search-results?plate=${encodeURIComponent(vehicle.current_plate || check.value)}`);
     } catch (error) {
       setSearchError(friendlySearchError(error));
     }

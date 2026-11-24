@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { LogoLoader } from "@/components/LogoLoader";
@@ -15,22 +15,18 @@ export function ProtectedRoute({
 }) {
   const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
-  const [ready, setReady] = useState(false);
+  const allowed = Boolean(isAuthenticated && user && (!allow || roleAllowed(user.role, allow)));
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || allowed) return;
     if (!isAuthenticated || !user) {
       router.replace("/vehiclehistory/login");
       return;
     }
-    if (allow && !roleAllowed(user.role, allow)) {
-      router.replace(homeForRole(user.role));
-      return;
-    }
-    setReady(true);
-  }, [allow, isAuthenticated, isLoading, router, user]);
+    router.replace(homeForRole(user.role));
+  }, [allow, allowed, isAuthenticated, isLoading, router, user]);
 
-  if (isLoading || !ready) {
+  if (isLoading || !allowed) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#eef3f3]">
         <LogoLoader label="Checking your session" />

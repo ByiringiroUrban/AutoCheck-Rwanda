@@ -6,6 +6,7 @@ import { validatePlate, validateVin } from "@/utils/validation";
 import { Form } from "@/components/form/FormUI";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CarFrontIcon } from "@/components/icons";
@@ -16,6 +17,7 @@ const inputBase =
 const errorText = "mt-[4px] text-[12px] text-ac-danger";
 
 export default function VehicleHistoryReportsPage() {
+  const router = useRouter();
   const [vin, setVin] = useState("");
   const [vinError, setVinError] = useState(false);
   const [plate, setPlate] = useState("");
@@ -36,7 +38,7 @@ export default function VehicleHistoryReportsPage() {
     setSearchError(null);
     try {
       const vehicle = await lookupVehicle("vin", check.value);
-      window.location.assign(`/search-results?vin=${encodeURIComponent(vehicle.vin)}`);
+      router.push(`/search-results?vin=${encodeURIComponent(vehicle.vin)}`);
     } catch (error) {
       setSearchError(friendlySearchError(error));
     }
@@ -54,7 +56,7 @@ export default function VehicleHistoryReportsPage() {
     setSearchError(null);
     try {
       const vehicle = await lookupVehicle("plate", check.value);
-      window.location.assign(`/search-results?plate=${encodeURIComponent(vehicle.current_plate || check.value)}`);
+      router.push(`/search-results?plate=${encodeURIComponent(vehicle.current_plate || check.value)}`);
     } catch (error) {
       setSearchError(friendlySearchError(error));
     }

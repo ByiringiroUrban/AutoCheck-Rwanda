@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DataTable } from "@/components/DataTable";
 import { DashboardFrame } from "@/components/DashboardFrame";
@@ -31,22 +31,34 @@ function UsersBody() {
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("");
 
-  const load = async (nextSearch = search, nextRole = role) => {
+  const load = useCallback(async (nextSearch = search, nextRole = role) => {
     const page = await endpoints.adminUsers({
       search: nextSearch || undefined,
       role: nextRole || undefined,
     });
     setRows(page.items);
     setNote(`${page.total} accounts · page ${page.page} of ${page.pages}`);
-  };
+  }, [search, role]);
 
   useEffect(() => {
-    load().catch((err: unknown) => {
-      setRows([]);
-      setError(err instanceof ApiError ? err.message : "Users could not be loaded.");
-    });
-    // Initial directory load.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let active = true;
+
+    void (async () => {
+      try {
+        const page = await endpoints.adminUsers();
+        if (!active) return;
+        setRows(page.items);
+        setNote(`${page.total} accounts · page ${page.page} of ${page.pages}`);
+      } catch (err) {
+        if (!active) return;
+        setRows([]);
+        setError(err instanceof ApiError ? err.message : "Users could not be loaded.");
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const updateUser = async (event: FormEvent<HTMLFormElement>) => {

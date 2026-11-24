@@ -18,7 +18,7 @@ export default function AutoCheckScorePage() {
           <div className="bg-white p-8 rounded-lg shadow-sm border border-[#eaeaea]">
             <h2 className="text-xl font-bold text-[#333] mb-4">What is the AutoCheck Score?</h2>
             <p className="text-gray-700 mb-6 leading-relaxed">
-              The AutoCheck Score is a quick and easy way to evaluate a used vehicle's history. It summarizes the vehicle's past into a single, easy-to-understand number, allowing you to compare it with similar vehicles.
+              The AutoCheck Score is a quick and easy way to evaluate a used vehicle&apos;s history. It summarizes the vehicle&apos;s past into a single, easy-to-understand number, allowing you to compare it with similar vehicles.
             </p>
 
             <div className="flex flex-col md:flex-row gap-8 items-center mb-8 bg-[#f4f9ff] p-6 rounded-lg border border-[#cde0f5]">
@@ -28,7 +28,7 @@ export default function AutoCheckScorePage() {
               <div>
                 <h3 className="text-lg font-bold text-[#0b4c4c] mb-2">How to read the score</h3>
                 <p className="text-gray-700 text-sm">
-                  The score typically ranges from 1 to 100. A higher score indicates a better vehicle history. The report also provides a "Score Range," showing the expected scores of similar vehicles (based on make, model, year). If a vehicle's score falls within or above the range, it generally means its history is as good as or better than average.
+                  The score typically ranges from 1 to 100. A higher score indicates a better vehicle history. The report also provides a &quot;Score Range,&quot; showing the expected scores of similar vehicles (based on make, model, year). If a vehicle&apos;s score falls within or above the range, it generally means its history is as good as or better than average.
                 </p>
               </div>
             </div>

@@ -13,9 +13,13 @@ def main() -> None:
 
     root = Path(__file__).resolve().parent
     schema = root / "prisma" / "schema.prisma"
+    env = os.environ.copy()
+    scripts_dir = str(Path(sys.executable).parent)
+    env["PATH"] = scripts_dir + os.pathsep + env.get("PATH", "")
     subprocess.check_call(
         [sys.executable, "-m", "prisma", "generate", f"--schema={schema}"],
         cwd=root,
+        env=env,
     )
 
 

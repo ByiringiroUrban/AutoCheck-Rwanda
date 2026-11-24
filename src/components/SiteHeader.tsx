@@ -11,9 +11,7 @@ type NavGroup = { label: string; links: NavLink[] };
 
 function useUtilityLinks(): (NavLink & { onClick?: () => void })[] {
   const { isAuthenticated, logout, user } = useAuth();
-  const [ready, setReady] = useState(false);
-  useEffect(() => setReady(true), []);
-  if (!ready || !isAuthenticated || !user) {
+  if (!isAuthenticated || !user) {
     return [
       { label: "Sample Report", href: "/vehiclehistory/sample-vehicle-history-report" },
       { label: "VIN Guide", href: "/vehiclehistory/vin-guide" },

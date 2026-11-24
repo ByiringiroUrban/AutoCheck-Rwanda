@@ -2,7 +2,6 @@ import {
   AlertTriangle,
   CarFront,
   ClipboardCheck,
-  FileText,
   Gauge,
   Gavel,
   RefreshCw,

@@ -7,7 +7,10 @@ from app.core.config import settings
 logger = logging.getLogger(__name__)
 
 # Global Prisma Client instance
-db = Prisma(auto_register=True)
+# Prisma's engine reads DATABASE_URL from the process environment, while the
+# application settings may have loaded it from .env. Pass it explicitly so both
+# local and deployed runtimes use the same configured database.
+db = Prisma(datasource={"url": settings.DATABASE_URL}, auto_register=True)
 _connection_attempted = False
 
 

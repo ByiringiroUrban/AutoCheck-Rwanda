@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Suspense, type FormEvent } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ApiError } from "@/services/api";
 import { endpoints } from "@/services/endpoints";
@@ -10,13 +10,27 @@ import { Form } from "@/components/form/FormUI";
 
 function ResetPasswordOtpContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-
   const queryEmail = searchParams.get("email") || "";
   const queryOtp = searchParams.get("otp") || "";
 
-  const [email, setEmail] = useState(queryEmail);
-  const [otp, setOtp] = useState(queryOtp);
+  return (
+    <ResetPasswordForm
+      key={`${queryEmail}:${queryOtp}`}
+      initialEmail={queryEmail}
+      initialOtp={queryOtp}
+    />
+  );
+}
+
+function ResetPasswordForm({
+  initialEmail,
+  initialOtp,
+}: {
+  initialEmail: string;
+  initialOtp: string;
+}) {
+  const [email, setEmail] = useState(initialEmail);
+  const [otp, setOtp] = useState(initialOtp);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,11 +43,6 @@ function ResetPasswordOtpContent() {
   const [cooldown, setCooldown] = useState(0);
 
   const otpInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (queryEmail) setEmail(queryEmail);
-    if (queryOtp) setOtp(queryOtp);
-  }, [queryEmail, queryOtp]);
 
   useEffect(() => {
     if (cooldown <= 0) return;

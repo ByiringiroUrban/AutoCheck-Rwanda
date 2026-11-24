@@ -1,5 +1,9 @@
+import os
 import sys
 from pathlib import Path
+
+# Keep automated tests independent from the configured production database.
+os.environ["ENVIRONMENT"] = "test"
 
 # Add backend directory to python path
 backend_dir = Path(__file__).resolve().parent.parent

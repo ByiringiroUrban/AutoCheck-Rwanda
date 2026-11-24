@@ -29,25 +29,31 @@ function HistoryBody() {
   const [items, setItems] = useState<TimelineItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const loadVin = async (vin: string) => {
-    setError(null);
-    try {
-      const found = await lookupVehicle("vin", vin);
-      setVehicle(found);
-      setItems(await endpoints.vehicleTimeline(found.id));
-    } catch (err) {
-      setVehicle(null);
-      setItems([]);
-      setError(friendlySearchError(err));
-    }
-  };
+  const queryVin = params.get("vin") || "";
 
   useEffect(() => {
-    const vin = params.get("vin");
-    if (vin) void loadVin(vin);
-    // The query string is the only trigger for the automatic lookup.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
+    if (!queryVin) return;
+    let active = true;
+
+    void (async () => {
+      try {
+        const found = await lookupVehicle("vin", queryVin);
+        const timeline = await endpoints.vehicleTimeline(found.id);
+        if (!active) return;
+        setVehicle(found);
+        setItems(timeline);
+      } catch (err) {
+        if (!active) return;
+        setVehicle(null);
+        setItems([]);
+        setError(friendlySearchError(err));
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [queryVin]);
 
   const find = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -69,7 +75,7 @@ function HistoryBody() {
       <div className="max-w-2xl space-y-4">
         {error ? <Alert>{error}</Alert> : null}
         <PendingForm onSubmit={find} className="flex flex-col gap-3 sm:flex-row">
-          <input name="vin" required maxLength={17} placeholder="VIN" defaultValue={params.get("vin") || ""} className={fieldClass} />
+          <input name="vin" required maxLength={17} placeholder="VIN" defaultValue={queryVin} className={fieldClass} />
           <SubmitButton busyLabel="Looking up…">Look up</SubmitButton>
         </PendingForm>
         {vehicle ? <VehicleIdentityCard vehicle={vehicle} mask={false} /> : null}

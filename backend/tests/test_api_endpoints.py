@@ -1,5 +1,9 @@
+from unittest.mock import AsyncMock
+
 import pytest
 from httpx import AsyncClient
+
+from app.services.auth_service import AuthService
 
 
 @pytest.mark.anyio
@@ -34,7 +38,12 @@ async def test_openapi_docs_json(async_client: AsyncClient):
 
 
 @pytest.mark.anyio
-async def test_forgot_password_generic_response(async_client: AsyncClient):
+async def test_forgot_password_generic_response(async_client: AsyncClient, monkeypatch: pytest.MonkeyPatch):
+    request_reset = AsyncMock(
+        return_value="If your email is registered, a 6-digit verification code has been sent."
+    )
+    monkeypatch.setattr(AuthService, "request_password_reset", request_reset)
+
     response = await async_client.post(
         "/api/v1/auth/forgot-password",
         json={"email": "anyuser@autocheck.rw"},
@@ -43,6 +52,7 @@ async def test_forgot_password_generic_response(async_client: AsyncClient):
     data = response.json()
     assert data["success"] is True
     assert "verification code" in data["message"].lower()
+    request_reset.assert_awaited_once()
 
 
 @pytest.mark.anyio

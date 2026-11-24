@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -71,8 +72,6 @@ function ScoreGauge({ score }: { score: number }) {
   // We draw a half-circle arc using SVG
   const pct = score / 100;
   const r = 44;
-  const cx = 54;
-  const cy = 54;
   const arcLen = Math.PI * r; // half-circle circumference
   const dash = pct * arcLen;
   return (
@@ -474,12 +473,12 @@ export default function SampleReportPage() {
             <p className="text-[14px] text-[#555] mb-3">
               This is a sample report. Run a real report on any vehicle in Rwanda.
             </p>
-            <a
+            <Link
               href="/#vehiclehistoryreport"
               className="ac-btn inline-flex px-8 py-3 text-[15px] font-semibold no-underline"
             >
               Search a Vehicle Now
-            </a>
+            </Link>
           </div>
         </div>
       </main>
