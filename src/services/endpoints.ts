@@ -133,6 +133,11 @@ export const endpoints = {
 
   myVehicles: () => api<Ownership[]>("/api/v1/ownership/my-vehicles"),
 
+  pendingClaims: () => api<Ownership[]>("/api/v1/ownership/claims/pending"),
+
+  reviewClaim: (id: string, decision: "approve" | "reject") =>
+    api<Ownership>(`/api/v1/ownership/claims/${id}/${decision}`, { method: "POST" }),
+
   applyOrganization: (body: {
     name?: string;
     type: string;

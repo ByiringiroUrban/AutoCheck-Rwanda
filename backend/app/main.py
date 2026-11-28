@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from prisma import errors as prisma_errors
 
 from app.core.config import settings
 from app.db.session import connect_db, disconnect_db
@@ -72,6 +73,32 @@ async def app_exception_handler(request: Request, exc: AppException):
             "detail": exc.detail,
         },
         headers=exc.headers,
+    )
+
+
+@app.exception_handler(prisma_errors.DataError)
+async def prisma_data_error_handler(request: Request, exc: prisma_errors.DataError):
+    """Invalid enum / field values reaching the DB layer are client errors, not server crashes."""
+    logger.warning(f"Invalid data rejected by database layer: {exc}")
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "success": False,
+            "error_code": "INVALID_VALUE",
+            "detail": "One of the submitted values is not valid for this field.",
+        },
+    )
+
+
+@app.exception_handler(prisma_errors.UniqueViolationError)
+async def prisma_unique_error_handler(request: Request, exc: prisma_errors.UniqueViolationError):
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content={
+            "success": False,
+            "error_code": "CONFLICT",
+            "detail": "A record with these details already exists.",
+        },
     )
 
 

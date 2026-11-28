@@ -131,6 +131,31 @@ async def seed():
     else:
         print("Garage exists: Kigali Premier Auto Service")
 
+    # Dealer organization for dealer@kigalicarhub.rw (needed for dealer inventory / reports / logs)
+    dealer_user = created_users["dealer@kigalicarhub.rw"]
+    dealer_org = await db.organization.find_unique(where={"tin": "100876543"})
+    if not dealer_org:
+        dealer_org = await db.organization.create(
+            data={
+                "name": "Kigali Car Hub",
+                "type": "DEALER",
+                "tin": "100876543",
+                "location": "Kimironko, Kigali",
+                "email": "sales@kigalicarhub.rw",
+                "phone": "+250788777888",
+                "status": "APPROVED",
+            }
+        )
+        await db.organizationmember.create(
+            data={
+                "organization_id": dealer_org.id,
+                "user_id": dealer_user.id,
+                "role": "MANAGER",
+                "status": "ACTIVE",
+            }
+        )
+        print("Created Dealer: Kigali Car Hub")
+
     # -------------------------------------------------------------
     # 3. SAMPLE VEHICLES FOR PITCHING & SEARCH
     # -------------------------------------------------------------

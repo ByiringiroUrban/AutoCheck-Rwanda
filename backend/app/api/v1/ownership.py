@@ -44,6 +44,16 @@ async def get_my_vehicles(
     return await service.get_user_vehicles(current_user.id)
 
 
+@router.get("/claims/pending", response_model=List[OwnershipResponse])
+async def list_pending_claims(
+    current_user: UserResponse = Depends(require_role(["ADMIN", "SUPER_ADMIN"])),
+    db: Prisma = Depends(get_db)
+):
+    """Admin endpoint: ownership claims waiting for review."""
+    service = OwnershipService(db)
+    return await service.list_pending_claims()
+
+
 @router.get("/claims/{id}", response_model=OwnershipResponse)
 async def get_claim_details(
     id: str,

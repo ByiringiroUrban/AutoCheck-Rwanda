@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
 from prisma import Prisma
@@ -136,6 +137,19 @@ class VehicleService:
                 )
                 if plate_records:
                     return await self.get_vehicle_by_id(plate_records[0].vehicle_id)
+
+            # Fallback: compare ignoring spaces/dashes/case so "RAC 123A", "rac123a"
+            # and "RAC 123 A" all match regardless of how the plate was stored.
+            compact = re.sub(r"[\s\-]", "", plate).upper()
+            if compact:
+                rows = await self.db.query_raw(
+                    "SELECT vehicle_id FROM vehicle_plates "
+                    "WHERE UPPER(REPLACE(REPLACE(plate_number, ' ', ''), '-', '')) = $1 "
+                    "ORDER BY start_date DESC LIMIT 1",
+                    compact,
+                )
+                if rows:
+                    return await self.get_vehicle_by_id(rows[0]["vehicle_id"])
 
         return None
 

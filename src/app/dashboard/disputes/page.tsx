@@ -26,10 +26,13 @@ function DisputesBody() {
   const [rows, setRows] = useState<Dispute[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = () =>
     endpoints.myDisputes().then(setRows).catch((err: unknown) => {
       setError(err instanceof ApiError ? err.message : "Disputes could not be loaded.");
     });
+
+  useEffect(() => {
+    void load();
   }, []);
 
   return (
@@ -49,7 +52,7 @@ function DisputesBody() {
         />
         <div className="max-w-xl rounded-[8px] border border-solid border-[#ddd] bg-white p-5 shadow-sm">
           <h2 className="m-0 mb-3 text-[18px] font-bold">Open a correction</h2>
-          <DisputeForm />
+          <DisputeForm onCreated={() => void load()} />
         </div>
       </div>
     </DashboardFrame>

@@ -4,6 +4,7 @@ from app.services.cloudinary_service import CloudinaryService
 from app.schemas.auth import FileUploadResponse, UserResponse
 from app.api.deps import get_current_user
 from app.utils.exceptions import BadRequestException
+from app.utils.file_storage import save_uploaded_file
 
 router = APIRouter(prefix="/uploads", tags=["Uploads & Media"])
 
@@ -23,6 +24,11 @@ async def upload_image(
 
     allowed_folders = {"general", "vehicles", "garages", "profiles", "inspections", "evidence"}
     sanitized_folder = folder if folder in allowed_folders else "general"
+
+    if not CloudinaryService.is_configured():
+        # Local fallback so uploads work in development without Cloudinary credentials.
+        url, path = await save_uploaded_file(file, subfolder=sanitized_folder)
+        return FileUploadResponse(url=url, public_id=path, resource_type="image")
 
     res = await CloudinaryService.upload_file(file=file, folder=sanitized_folder, resource_type="image")
     return FileUploadResponse(
@@ -45,6 +51,11 @@ async def upload_evidence(
     """
     Upload proof / evidence document or photo to Cloudinary.
     """
+    if not CloudinaryService.is_configured():
+        # Local fallback so evidence uploads work in development without Cloudinary credentials.
+        url, path = await save_uploaded_file(file, subfolder=f"evidence_{category}")
+        return FileUploadResponse(url=url, public_id=path, resource_type="auto")
+
     res = await CloudinaryService.upload_evidence(file=file, category=category)
     return FileUploadResponse(
         url=res["url"],

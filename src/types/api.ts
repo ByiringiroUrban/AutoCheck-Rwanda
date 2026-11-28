@@ -223,6 +223,7 @@ export interface Ownership {
   status: string;
   created_at: string;
   vehicle?: Vehicle | null;
+  user?: User | null;
 }
 
 export interface OrganizationMember {

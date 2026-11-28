@@ -11,7 +11,7 @@ import { Form } from "@/components/form/FormUI";
 
 const TARGETS = ["SERVICE_RECORD", "INSPECTION", "MILEAGE", "INCIDENT", "VEHICLE_DETAILS"];
 
-export function DisputeForm() {
+export function DisputeForm({ onCreated }: { onCreated?: () => void } = {}) {
   const params = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
@@ -19,7 +19,9 @@ export function DisputeForm() {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    // Keep a reference: React clears event.currentTarget once the handler yields to an await.
+    const form = event.currentTarget;
+    const data = new FormData(form);
     setError(null);
     setPending(true);
     try {
@@ -39,7 +41,8 @@ export function DisputeForm() {
         evidence_url: evidenceUrl,
       });
       setDone(`Dispute ${dispute.id} is ${dispute.status}.`);
-      event.currentTarget.reset();
+      form.reset();
+      onCreated?.();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "The dispute could not be submitted.");
     } finally {

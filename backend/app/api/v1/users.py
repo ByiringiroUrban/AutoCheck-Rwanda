@@ -14,6 +14,7 @@ from app.schemas.common import MessageResponse
 from app.api.deps import get_current_user
 from app.core.security import verify_password
 from app.utils.exceptions import BadRequestException
+from app.utils.file_storage import save_uploaded_file
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -75,7 +76,12 @@ async def upload_my_avatar(
     if not file.content_type or not file.content_type.startswith("image/"):
         raise BadRequestException("Uploaded file must be an image (JPEG, PNG, WebP, etc.).")
 
-    cloud_res = await CloudinaryService.upload_profile_photo(file=file, user_id=current_user.id)
+    if CloudinaryService.is_configured():
+        cloud_res = await CloudinaryService.upload_profile_photo(file=file, user_id=current_user.id)
+    else:
+        # Local fallback so profile photos work without Cloudinary credentials.
+        local_url, local_path = await save_uploaded_file(file, subfolder="profiles")
+        cloud_res = {"url": local_url, "public_id": local_path}
     avatar_url = cloud_res["url"]
     await AuthService(db).update_user_avatar(current_user.id, avatar_url)
 

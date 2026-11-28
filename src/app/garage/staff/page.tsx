@@ -40,7 +40,9 @@ function StaffBody() {
 
   const invite = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    // Keep a reference: React clears event.currentTarget once the handler yields to an await.
+    const form = event.currentTarget;
+    const data = new FormData(form);
     const [first, ...rest] = String(data.get("name") || "").trim().split(/\s+/);
     setError(null);
     try {
@@ -52,7 +54,7 @@ function StaffBody() {
         role: String(data.get("role") || "STAFF"),
       });
       setNote("Invitation saved.");
-      event.currentTarget.reset();
+      form.reset();
       await load();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "The invitation could not be sent.");

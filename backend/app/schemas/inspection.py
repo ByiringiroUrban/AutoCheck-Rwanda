@@ -1,6 +1,6 @@
 from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class InspectionItemCreate(BaseModel):
@@ -9,6 +9,22 @@ class InspectionItemCreate(BaseModel):
     condition: str = "PASS"  # PASS, FAIL, WARNING, NOT_APPLICABLE
     severity: str = "NONE"   # NONE, LOW, MEDIUM, HIGH, CRITICAL
     notes: Optional[str] = None
+
+    @field_validator("condition")
+    @classmethod
+    def _validate_condition(cls, v: str) -> str:
+        v = (v or "PASS").strip().upper()
+        if v not in {"PASS", "FAIL", "WARNING", "NOT_APPLICABLE"}:
+            raise ValueError("condition must be one of PASS, FAIL, WARNING, NOT_APPLICABLE")
+        return v
+
+    @field_validator("severity")
+    @classmethod
+    def _validate_severity(cls, v: str) -> str:
+        v = (v or "NONE").strip().upper()
+        if v not in {"NONE", "LOW", "MEDIUM", "HIGH", "CRITICAL"}:
+            raise ValueError("severity must be one of NONE, LOW, MEDIUM, HIGH, CRITICAL")
+        return v
 
 
 class InspectionItemResponse(BaseModel):

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, status, Request, UploadFile, File, Form
 from prisma import Prisma
 from app.db.session import get_db
 from app.services.ai_service import AIService
+from app.services.cloudinary_service import CloudinaryService
 from app.services.audit_service import AuditService
 from app.utils.file_storage import save_uploaded_file
 from app.schemas.ai import (

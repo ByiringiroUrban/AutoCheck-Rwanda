@@ -98,6 +98,7 @@ const ADMIN_GROUPS: PortalGroup[] = [
     label: "Operations",
     links: [
       { href: "/admin/organizations", label: "Organization Approvals", icon: Building2 },
+      { href: "/admin/ownership", label: "Ownership Claims", icon: Database },
       { href: "/admin/disputes", label: "Dispute Queue", icon: ListTodo },
     ],
   },
@@ -117,6 +118,7 @@ const SUPER_GROUPS: PortalGroup[] = [
     label: "Access",
     links: [
       { href: "/admin/organizations", label: "Organization Approvals", icon: Building2 },
+      { href: "/admin/ownership", label: "Ownership Claims", icon: Database },
       { href: "/admin/users", label: "Users & Role Assignment", icon: UsersRound },
       { href: "/admin/disputes", label: "Dispute Queue", icon: ListTodo },
       { href: "/admin/security", label: "Security & API Keys", icon: Key },

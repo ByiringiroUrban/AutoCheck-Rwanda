@@ -54,6 +54,14 @@ class OwnershipService:
         )
         return [OwnershipResponse.model_validate(c) for c in claims]
 
+    async def list_pending_claims(self) -> List[OwnershipResponse]:
+        claims = await self.db.vehicleownership.find_many(
+            where={"status": "PENDING"},
+            include={"vehicle": {"include": {"plates": True}}, "user": True},
+            order={"created_at": "asc"},
+        )
+        return [OwnershipResponse.model_validate(c) for c in claims]
+
     async def get_claim_by_id(self, claim_id: str) -> OwnershipResponse:
         claim = await self.db.vehicleownership.find_unique(
             where={"id": claim_id},
